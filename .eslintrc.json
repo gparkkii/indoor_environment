@@ -1,0 +1,42 @@
+{
+    "extends": [
+        "next/core-web-vitals",
+        "plugin:react/recommended",
+        "plugin:react-hooks/recommended",
+        "airbnb",
+        "airbnb-typescript",
+        "prettier"
+    ],
+    "parserOptions": {
+        "project": "./tsconfig.json"
+    },
+    "plugins": ["react", "react-hooks", "react-typescript", "prettier"],
+    "rules": {
+        "import/no-unresolved": "off",
+        "import/export": "off",
+        "import/order": [
+            "error",
+            {
+                "groups": ["builtin", "external", "parent", "sibling", "index"],
+                "alphabetize": {
+                    "order": "asc",
+                    "caseInsensitive": true
+                },
+                "newlines-between": "never"
+            }
+        ],
+        "react/react-in-jsx-scope": "off",
+        "react/jsx-filename-extension": [
+            "error",
+            {
+                "extensions": [".js", ".jsx", ".ts", ".tsx"]
+            }
+        ]
+    },
+    "settings": {
+        "import/resolver": {
+            "typescript": {}
+        },
+        "import/parsers": { "@typescript-eslint/parser": [".ts", ".tsx"] }
+    }
+}
