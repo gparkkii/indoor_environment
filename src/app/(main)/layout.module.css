@@ -1,0 +1,7 @@
+.layout {
+    display: inline-flex;
+    align-items: center;
+    flex: 1;
+    width: 100%;
+    background-color: var(--color-white);
+}
