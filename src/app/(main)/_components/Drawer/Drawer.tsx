@@ -1,12 +1,42 @@
 'use client';
 
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import styles from './Drawer.module.css';
 import { MENU } from '@/constants/menu';
 import { useSelectedLayoutSegment } from 'next/navigation';
+import Radio from '../Radio/Radio';
+import TextInput from '../TextInput/TextInput';
+import Button from '../Button/Button';
+
+const COMPLETION_OPTION = [
+    { label: '1987년 이전', value: 1 },
+    { label: '1988 ~ 2000', value: 2 },
+    { label: '2001 ~ 2010', value: 3 },
+    { label: '2011 ~ 2017', value: 4 },
+    { label: '2018년 이후', value: 5 },
+];
+
+const BUILDING_OPTION = [
+    { label: '저에너지 건축물', value: 1 },
+    { label: '일반 건축물', value: 2 },
+];
 
 export default function Drawer() {
     const segment = useSelectedLayoutSegment();
+
+    const [year, setYear] = useState(1);
+    const [building, setBuilding] = useState(1);
+    const [airtight, setAirtight] = useState('');
+
+    const handleSubmit = useCallback(
+        (e: React.FormEvent<HTMLFormElement>) => {
+            e.preventDefault();
+            // TODO: API 요청
+            console.log(year, building, airtight);
+        },
+        [year, building, airtight]
+    );
+
     return (
         <div className={styles.layout}>
             <div className={styles.headerbox}>
@@ -15,6 +45,43 @@ export default function Drawer() {
                     {MENU.find(({ href }) => href === segment)?.title}
                 </div>
             </div>
+            <form className={styles.form} onSubmit={handleSubmit}>
+                <div>
+                    <div className={styles.inputbox}>
+                        <label>준공연도 선택</label>
+                        <Radio
+                            checked={year}
+                            option={COMPLETION_OPTION}
+                            onChange={(e) => setYear(Number(e.target.value))}
+                        />
+                    </div>
+                    <div className={styles.inputbox}>
+                        <label>건물 선택</label>
+                        <Radio
+                            checked={building}
+                            option={BUILDING_OPTION}
+                            onChange={(e) =>
+                                setBuilding(Number(e.target.value))
+                            }
+                        />
+                    </div>
+                    <div className={styles.inputbox}>
+                        <label>기밀 성능 값</label>
+                        <TextInput
+                            placeholder="기밀 성능 값"
+                            type="number"
+                            value={airtight}
+                            onChange={(e) => setAirtight(e.target.value)}
+                            unit={
+                                <p>
+                                    h<sup>-1</sup>
+                                </p>
+                            }
+                        />
+                    </div>
+                </div>
+                <Button type="submit">진단하기</Button>
+            </form>
         </div>
     );
 }

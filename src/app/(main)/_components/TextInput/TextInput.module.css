@@ -1,0 +1,35 @@
+.inputbox {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.inputbox > input {
+    width: 100%;
+    border: 1px solid var(--bluegray-300);
+    padding: 10px 12px;
+    font-size: 14px;
+    font-weight: 400;
+    border-radius: 6px;
+    background-color: #FFF;
+}
+
+.inputbox > input::placeholder {
+    color: var(--bluegray-400);
+}
+
+.unit {
+    position: absolute;
+    width: 34px;
+    padding-right: 12px;
+    font-size: 14px;
+    right: 0;
+}
+
+.unit p, 
+.unit sup {
+    font-weight: 500;
+    color: var(--bluegray-500);
+}

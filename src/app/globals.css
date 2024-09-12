@@ -5,14 +5,15 @@
     --color-dark: #13131D;
     --color-hover: #1d1d23;
     --color-active: #2c2c34;
-    --color-primary: #B7EEBE;
-    --color-secondary: #C4C6FA;
+    --color-primary: #2BBF93;
+    --color-secondary: #a2a5f8;
     --color-nav-hover: #a2a4af;
 
     --bluegray-50: #f8fafc;
     --bluegray-100: #f1f5f9;
     --bluegray-200: #e2e8f0;
     --bluegray-300: #cbd5e1;
+    --bluegray-350: #bec7d1;
     --bluegray-400: #94a3b8;
     --bluegray-500: #64748b;
     --bluegray-600: #475569;
@@ -121,4 +122,8 @@ select {
     font-weight: 500;
     font-size: 16px;
     line-height: 19px;
+}
+fieldset {
+    background: none;
+    border: none;
 }

@@ -1,5 +1,10 @@
 .layout {
-    min-width: 360px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 60px;
+    min-width: 340px;
     height: 100vh;
     padding: 40px 28px;
     background-color: var(--color-bg);
@@ -10,7 +15,7 @@
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-start;
-    gap: 8px;
+    gap: 6px;
 }
 
 .header {
@@ -20,6 +25,38 @@
 
 .subheader {
     font-size: 20px;
+    font-weight: 500;
+    color: var(--bluegray-700);
+}
+
+/* form */
+.form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    width: 100%;
+    height: 100%;
+}
+
+.form > div:first-child {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+    gap: 40px;
+}
+
+.inputbox {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 20px;
+}
+
+.inputbox > label {
+    font-size: 14px;
     font-weight: 500;
     color: var(--bluegray-600);
 }
