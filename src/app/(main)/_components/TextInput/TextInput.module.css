@@ -31,5 +31,5 @@
 .unit p, 
 .unit sup {
     font-weight: 500;
-    color: var(--bluegray-500);
+    color: var(--color-primary);
 }

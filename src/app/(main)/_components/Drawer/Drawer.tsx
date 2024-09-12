@@ -3,10 +3,11 @@
 import React, { useCallback, useState } from 'react';
 import styles from './Drawer.module.css';
 import { MENU } from '@/constants/menu';
-import { useSelectedLayoutSegment } from 'next/navigation';
+import { useRouter, useSelectedLayoutSegment } from 'next/navigation';
 import Radio from '../Radio/Radio';
 import TextInput from '../TextInput/TextInput';
 import Button from '../Button/Button';
+import getAirtightness from '@/actions/airtightness';
 
 const COMPLETION_OPTION = [
     { label: '1987년 이전', value: 1 },
@@ -17,24 +18,34 @@ const COMPLETION_OPTION = [
 ];
 
 const BUILDING_OPTION = [
-    { label: '저에너지 건축물', value: 1 },
-    { label: '일반 건축물', value: 2 },
+    { label: '일반 건축물', value: 1 },
+    // { label: '저에너지 건축물', value: 2 },
 ];
 
+type YearType = 1 | 2 | 3 | 4 | 5;
+
 export default function Drawer() {
+    const router = useRouter();
     const segment = useSelectedLayoutSegment();
 
-    const [year, setYear] = useState(1);
-    const [building, setBuilding] = useState(1);
+    const [year, setYear] = useState<YearType>(1);
     const [airtight, setAirtight] = useState('');
 
     const handleSubmit = useCallback(
         (e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault();
             // TODO: API 요청
-            console.log(year, building, airtight);
+            const res = getAirtightness({
+                year,
+                airtight,
+            });
+            if (res) {
+                router.push(
+                    `/${segment}?min=${res.min}&max=${res.max}&avg=${res?.avg}`
+                );
+            }
         },
-        [year, building, airtight]
+        [year, airtight]
     );
 
     return (
@@ -52,18 +63,18 @@ export default function Drawer() {
                         <Radio
                             checked={year}
                             option={COMPLETION_OPTION}
-                            onChange={(e) => setYear(Number(e.target.value))}
+                            onChange={(e) =>
+                                setYear(
+                                    Number(
+                                        e.target.value
+                                    ) as unknown as YearType
+                                )
+                            }
                         />
                     </div>
                     <div className={styles.inputbox}>
                         <label>건물 선택</label>
-                        <Radio
-                            checked={building}
-                            option={BUILDING_OPTION}
-                            onChange={(e) =>
-                                setBuilding(Number(e.target.value))
-                            }
-                        />
+                        <Radio checked={1} option={BUILDING_OPTION} />
                     </div>
                     <div className={styles.inputbox}>
                         <label>기밀 성능 값</label>

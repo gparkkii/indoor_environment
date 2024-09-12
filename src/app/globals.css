@@ -5,8 +5,10 @@
     --color-dark: #13131D;
     --color-hover: #1d1d23;
     --color-active: #2c2c34;
+    --color-primary-light: #67ebc3;
     --color-primary: #2BBF93;
-    --color-secondary: #a2a5f8;
+    --color-primary-dark: #25a67f;
+    --color-secondary: #A396FF;
     --color-nav-hover: #a2a4af;
 
     --bluegray-50: #f8fafc;
