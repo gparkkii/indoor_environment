@@ -1,7 +1,9 @@
 import React from 'react';
 import styles from '../page.module.css';
-import Chart from './_components/Chart';
 import { MENU } from '@/constants/menu';
+import AirtightChart from './_components/AirtightChart';
+import LightingChart from './_components/LightingChart';
+import TemperatureChart from './_components/TemperatureChart';
 
 export default function DetailPage({
     params: { id },
@@ -24,13 +26,22 @@ export default function DetailPage({
                         <br />
                         <span className={styles.emphasize}>
                             <strong>{avg}</strong>
-                            <span>
-                                &nbsp;h<sup>-1</sup>
-                            </span>
+                            {MENU[id].href === 'lighting' && (
+                                <span>
+                                    &nbsp;W/m<sup>2</sup>
+                                </span>
+                            )}
+                            {MENU[id].href === 'airtight' && (
+                                <span>
+                                    &nbsp;h<sup>-1</sup>
+                                </span>
+                            )}
                         </span>
                         &nbsp;&nbsp;입니다.
                     </h3>
-                    <Chart />
+                    {MENU[id].href === 'temperature' && <TemperatureChart />}
+                    {MENU[id].href === 'lighting' && <LightingChart />}
+                    {MENU[id].href === 'airtight' && <AirtightChart />}
                 </>
             ) : (
                 '옵션 선택 후 진단하기 버튼을 눌러주세요.'

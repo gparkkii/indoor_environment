@@ -34,7 +34,7 @@ const SERIES = [
     },
 ];
 
-export default function Chart() {
+export default function AirtightChart() {
     return (
         <div className={styles.container}>
             <div className={styles.chartbox}>

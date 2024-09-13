@@ -22,14 +22,20 @@
     color: var(--bluegray-600);
 }
 
-.emphasize::before {
+.emphasize {
+    width: fit-content;
+    /* background-color:rgba(87, 218, 161, 0.175); */
+    border-bottom: 5px solid rgba(87, 218, 161, 0.25);
+}
+
+/* .emphasize::before {
     position: absolute;
     content: '';
-    width: 138px;
+    width: fit-content !important;
     height: 16px;
     bottom: 10px;
     background-color: rgba(0, 155, 255, 0.145);
-}
+} */
 
 .emphasize > span {
     font-size: 20px;
