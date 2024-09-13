@@ -14,7 +14,7 @@ type YearType = 1 | 2 | 3 | 4 | 5;
 
 export default function Drawer() {
     const router = useRouter();
-    const segment = useSelectedLayoutSegment();
+    const segment = useSelectedLayoutSegment() as keyof typeof MENU;
 
     const [year, setYear] = useState<YearType>(1);
     const [airtight, setAirtight] = useState('');
@@ -33,7 +33,7 @@ export default function Drawer() {
                 );
             }
         },
-        [year, airtight]
+        [year, airtight, segment]
     );
 
     return (
@@ -43,9 +43,7 @@ export default function Drawer() {
         >
             <div className={styles.headerbox}>
                 <div className={styles.header}>실내 환경 진단</div>
-                <div className={styles.subheader}>
-                    {MENU.find(({ href }) => href === segment)?.title}
-                </div>
+                <div className={styles.subheader}>{MENU[segment].title}</div>
             </div>
             <form className={styles.form} onSubmit={handleSubmit}>
                 <div>

@@ -1,10 +1,13 @@
 import React from 'react';
 import styles from '../page.module.css';
 import Chart from './_components/Chart';
+import { MENU } from '@/constants/menu';
 
-export default function AirTightPage({
+export default function DetailPage({
+    params: { id },
     searchParams: { min, max, avg },
 }: {
+    params: { id: keyof typeof MENU };
     searchParams: {
         min?: string;
         max?: string;
@@ -13,10 +16,11 @@ export default function AirTightPage({
 }) {
     return (
         <div className={styles.container}>
-            {avg ? (
+            {avg && id ? (
                 <>
                     <h3 className={styles.title}>
-                        당신의 <b>기밀 성능</b>은&nbsp;&nbsp;
+                        당신의 <b>{MENU[id].title}</b>
+                        {MENU[id].href === 'airtight' ? '은' : '는'}&nbsp;&nbsp;
                         <br />
                         <span className={styles.emphasize}>
                             <strong>{avg}</strong>

@@ -20,7 +20,7 @@ export default function Nav() {
                 {isOpen ? 'INOOR ENVIRONMENT' : '+'}
             </Link>
             <ul className={styles.nav}>
-                {MENU.map(({ href, icon, title }) => (
+                {Object.values(MENU).map(({ href, icon, title }) => (
                     <li
                         key={href}
                         className={`${styles.list} ${segment === href ? styles.active : ''}`}
