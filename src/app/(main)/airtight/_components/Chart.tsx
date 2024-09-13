@@ -37,8 +37,8 @@ const SERIES = [
 export default function Chart() {
     return (
         <div className={styles.container}>
-            <label>준공연도별 기밀성능 범위(단위: h-1 ACH@50Pa)</label>
             <div className={styles.chartbox}>
+                <label>준공연도별 기밀성능 범위 (단위: h-1 ACH@50Pa)</label>
                 <ApexChart
                     type="boxPlot"
                     series={SERIES}
@@ -49,6 +49,7 @@ export default function Chart() {
                                 autoSelected: undefined,
                             },
                         },
+                        responsive: [],
                         xaxis: {
                             type: 'category',
                             tooltip: {
@@ -66,13 +67,40 @@ export default function Chart() {
                                 },
                             },
                         },
+                        yaxis: {
+                            labels: {
+                                style: {
+                                    colors: '#64748b',
+                                },
+                            },
+                            tooltip: {
+                                enabled: false,
+                            },
+                        },
                         tooltip: {
                             shared: false,
                             intersect: true,
+                            custom: function ({ w, dataPointIndex }) {
+                                const series =
+                                    w.config.series[0].data[dataPointIndex];
+                                return (
+                                    '<div class="chart_tooltip">' +
+                                    '<span>' +
+                                    'min: ' +
+                                    series.y[0] +
+                                    '<br/>' +
+                                    'avg: ' +
+                                    series.y[2] +
+                                    '<br/>' +
+                                    'max: ' +
+                                    series.y[4] +
+                                    '</span>' +
+                                    '</div>'
+                                );
+                            },
                         },
                     }}
-                    width={700}
-                    height={500}
+                    width="100%"
                 />
             </div>
         </div>

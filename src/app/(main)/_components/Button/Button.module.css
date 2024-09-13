@@ -10,3 +10,7 @@
     font-weight: 500;
     color: var(--color-white);
 }
+
+.button:hover {
+    background-color: var(--color-primary-dark);
+}

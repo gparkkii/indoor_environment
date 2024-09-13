@@ -37,7 +37,10 @@ export default function Drawer() {
     );
 
     return (
-        <div className={styles.layout}>
+        <div
+            className={styles.layout}
+            style={{ display: segment ? 'flex' : 'none' }}
+        >
             <div className={styles.headerbox}>
                 <div className={styles.header}>실내 환경 진단</div>
                 <div className={styles.subheader}>

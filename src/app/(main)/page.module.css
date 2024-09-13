@@ -9,34 +9,44 @@
 }
 
 .title {
-    font-size: 28px;
+    position: relative;
+    font-size: 24px;
     font-weight: 500;
-    line-height: 130%;
+    line-height: 140%;
     color: var(--bluegray-600);
 }
 
 .title > b {
     font-weight: 700;
-    line-height: 130%;
-    color: var(--bluegray-800);
-}
-
-.title > span {
-    font-size: 20px;
-    font-weight: 500;
-    line-height: 130%;
+    line-height: 140%;
     color: var(--bluegray-600);
 }
 
-.title sup {
-    font-size: 14px;
-    color: inherit;
+.emphasize::before {
+    position: absolute;
+    content: '';
+    width: 138px;
+    height: 16px;
+    bottom: 10px;
+    background-color: rgba(0, 155, 255, 0.145);
 }
 
-.title > strong {
-    font-size: 48px;
+.emphasize > span {
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 140%;
+    color: var(--color-primary);
+}
+
+.emphasize sup {
+    font-size: 14px;
+    color: inherit;
+    color: var(--color-primary);
+}
+
+.emphasize > strong {
+    font-size: 56px;
     font-weight: 800;
-    line-height: 130%;
-    letter-spacing: -0.025em;
+    line-height: 140%;
     color: var(--color-primary);
 }

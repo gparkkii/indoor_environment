@@ -14,19 +14,23 @@ export default function AirTightPage({
     return (
         <div className={styles.container}>
             {avg ? (
-                <h3 className={styles.title}>
-                    당신의 <b>기밀 성능</b>은
-                    <br />
-                    <strong>{avg}</strong>
-                    <span>
-                        &nbsp;h<sup>-1</sup>
-                    </span>
-                    &nbsp;&nbsp;입니다.
-                </h3>
+                <>
+                    <h3 className={styles.title}>
+                        당신의 <b>기밀 성능</b>은&nbsp;&nbsp;
+                        <br />
+                        <span className={styles.emphasize}>
+                            <strong>{avg}</strong>
+                            <span>
+                                &nbsp;h<sup>-1</sup>
+                            </span>
+                        </span>
+                        &nbsp;&nbsp;입니다.
+                    </h3>
+                    <Chart />
+                </>
             ) : (
-                '옵션을 선택해주세요.'
+                '옵션 선택 후 진단하기 버튼을 눌러주세요.'
             )}
-            <Chart />
         </div>
     );
 }

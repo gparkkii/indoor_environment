@@ -1,7 +1,20 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
+import { Inter, Lato, Montserrat, Poppins, Rubik } from 'next/font/google';
 
+const lato = Lato({
+    weight: ['400', '700', '900'],
+    subsets: ['latin'],
+    display: 'swap',
+    variable: '--lato',
+});
+const inter = Poppins({
+    weight: ['400', '500', '600', '700', '800', '900'],
+    subsets: ['latin'],
+    display: 'swap',
+    variable: '--inter',
+});
 const pretendard = localFont({
     src: '../assets/fonts/PretendardVariable.woff2',
     display: 'swap',
@@ -21,7 +34,9 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <body className={`${pretendard.variable} font-pretendard`}>
+            <body
+                className={`${pretendard.variable} font-pretendard ${inter.className} ${lato.className}`}
+            >
                 <main>{children}</main>
             </body>
         </html>

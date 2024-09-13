@@ -20,6 +20,11 @@
     color: var(--bluegray-400);
 }
 
+.inputbox input:active, 
+.inputbox input:focus {
+    border: 1px solid var(--color-primary-light);
+}
+
 .unit {
     position: absolute;
     width: 34px;
@@ -31,5 +36,5 @@
 .unit p, 
 .unit sup {
     font-weight: 500;
-    color: var(--color-primary);
+    color: var(--color-primary-light);
 }

@@ -16,12 +16,13 @@ export default function Nav() {
             className={styles.layout}
             style={{ width: isOpen ? '100%' : '64px' }}
         >
-            <div className={styles.header}>
+            <Link href="/" className={styles.header}>
                 {isOpen ? 'INOOR ENVIRONMENT' : '+'}
-            </div>
+            </Link>
             <ul className={styles.nav}>
                 {MENU.map(({ href, icon, title }) => (
                     <li
+                        key={href}
                         className={`${styles.list} ${segment === href ? styles.active : ''}`}
                     >
                         <Link href={`/${href}`}>
