@@ -3,8 +3,8 @@
 import dynamic from 'next/dynamic';
 const ApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
-import { COMPLETION_OPTION } from '@/constants/option';
 import styles from './Chart.module.css';
+import { YEAR_OPTION } from '@/constants/option';
 
 const SERIES = [
     {
@@ -57,7 +57,7 @@ export default function AirtightChart() {
                             },
                             labels: {
                                 formatter: (val: string) => {
-                                    const label = COMPLETION_OPTION.find(
+                                    const label = YEAR_OPTION.find(
                                         ({ value }) => value === Number(val)
                                     )?.label.toString();
                                     return label ?? '---';
