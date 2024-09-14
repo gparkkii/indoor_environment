@@ -6,8 +6,8 @@ const TABLE = {
     5: { min: 0, max: 0, avg: 0 },
 };
 
-interface getAirtightnessProps {
-    year: 1 | 2 | 3 | 4 | 5;
+interface GetAirtightnessProps {
+    year: Year.value;
     airtight: string;
 }
 
@@ -20,6 +20,6 @@ interface AirtightnessRes {
 export default function getAirtightness({
     year,
     airtight,
-}: getAirtightnessProps): AirtightnessRes | null {
+}: GetAirtightnessProps): AirtightnessRes | null {
     return TABLE[year];
 }
