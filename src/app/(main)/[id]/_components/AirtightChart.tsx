@@ -38,7 +38,9 @@ export default function AirtightChart() {
     return (
         <div className={styles.container}>
             <div className={styles.chartbox}>
-                <label>준공연도별 기밀성능 범위 (단위: h-1 ACH@50Pa)</label>
+                <label>
+                    준공연도별 기밀성능 범위 (단위: h<sup>-1</sup> ACH@50Pa)
+                </label>
                 <ApexChart
                     type="boxPlot"
                     series={SERIES}

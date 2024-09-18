@@ -13,14 +13,14 @@
     font-size: 24px;
     font-weight: 500;
     line-height: 140%;
-    color: var(--bluegray-600);
+    color: var(--bluegray-700);
     padding-bottom: 60px
 }
 
 .title > b {
     font-weight: 700;
     line-height: 140%;
-    color: var(--bluegray-600);
+    color: var(--bluegray-800);
 }
 
 .emphasize {
@@ -52,7 +52,7 @@
 }
 
 .emphasize > strong {
-    font-size: 56px;
+    font-size: 60px;
     font-weight: 800;
     line-height: 140%;
     color: var(--color-primary);

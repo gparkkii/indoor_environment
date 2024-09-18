@@ -20,17 +20,22 @@ export default function Nav() {
                 {isOpen ? 'INOOR ENVIRONMENT' : '+'}
             </Link>
             <ul className={styles.nav}>
-                {Object.values(MENU).map(({ href, icon, title }) => (
-                    <li
-                        key={href}
-                        className={`${styles.list} ${segment === href ? styles.active : ''}`}
-                    >
-                        <Link href={`/${href}`}>
-                            {icon()}
-                            {isOpen && title}
-                        </Link>
-                    </li>
-                ))}
+                {Object.values(MENU).map(({ href, icon, title }) => {
+                    return (
+                        <li
+                            key={href}
+                            className={`${styles.list} ${segment === href ? styles.active : ''}`}
+                        >
+                            <Link
+                                href={href === 'temperature' ? '' : `/${href}`}
+                                aria-description="준비중"
+                            >
+                                {icon()}
+                                {isOpen && title}
+                            </Link>
+                        </li>
+                    );
+                })}
             </ul>
         </div>
     );

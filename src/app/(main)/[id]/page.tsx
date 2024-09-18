@@ -7,12 +7,10 @@ import TemperatureChart from './_components/TemperatureChart';
 
 export default function DetailPage({
     params: { id },
-    searchParams: { min, max, avg },
+    searchParams: { avg },
 }: {
     params: { id: keyof typeof MENU };
     searchParams: {
-        min?: string;
-        max?: string;
         avg?: string;
     };
 }) {
@@ -21,7 +19,7 @@ export default function DetailPage({
             {avg && id ? (
                 <>
                     <h3 className={styles.title}>
-                        당신의 <b>{MENU[id].title}</b>
+                        당신의 <b>{MENU[id]?.title ?? '---'}</b>
                         {MENU[id].href === 'airtight' ? '은' : '는'}&nbsp;&nbsp;
                         <br />
                         <span className={styles.emphasize}>

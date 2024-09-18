@@ -20,6 +20,77 @@
 .chartbox > label {
     font-size: 16px;
     font-weight: 500;
-    color: var(--bluegray-500);
+    color: var(--bluegray-600);
     padding-bottom: 20px;
+}
+
+.chartbox sup {
+    color: var(--bluegray-500);
+}
+
+/* Lighting */
+.table {
+    border: 1px solid var(--bluegray-350);
+    border-spacing: 0;
+}
+.table thead {
+    background-color: var(--bluegray-100);
+    white-space: nowrap;
+    overflow: hidden;
+}
+.table th {
+    height: 44px;
+    padding: 9px 16px;
+
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--bluegray-500);
+    vertical-align: middle;
+    white-space: nowrap;
+    text-align: center;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--bluegray-350);
+}
+.table thead > tr:first-child > th:first-child {
+    border-right: 1px solid var(--bluegray-350);
+}
+.table thead > tr:not(:first-child) > th:not(:last-child) {
+    border-right: 1px solid var(--bluegray-350);
+}
+.table thead > tr:last-child > th{
+    border-bottom: 1px solid var(--bluegray-350);
+}
+.table tbody > tr > th {
+    border-right: 1px solid var(--bluegray-350);
+}
+.table tbody > tr > th {
+    background-color: var(--bluegray-50);
+}
+.table tbody td, 
+.table tbody th{
+    height: 56px;
+    padding: 10px 12px;
+    font-size: 15px;
+    font-weight: 400;
+    vertical-align: middle;
+    white-space: nowrap;
+    text-align: center;
+    border-bottom: 1px solid var(--bluegray-350);
+}
+.table tbody td {
+    color: var(--bluegray-600);
+}
+.table tr:last-child > td ,
+.table tr:last-child > th{
+    border-bottom: 0px;
+}
+.table td:not(:last-child) {
+    border-right: 1px solid var(--bluegray-350);
+}
+
+.highlight {
+    font-weight: 600 !important;
+    color: #40A0FC !important;
+    background-color: rgba(0, 162, 255, 0.15);
+    border-bottom: 2px solid #40A0FC !important;
 }

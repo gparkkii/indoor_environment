@@ -8,12 +8,12 @@ import Radio from '../Radio/Radio';
 import TextInput from '../TextInput/TextInput';
 import Button from '../Button/Button';
 import getAirtightness from '@/actions/airtightness';
+import getLighting from '@/actions/lighting';
 import {
     BUILDING_OPTION,
     BUILDING_TYPE_OPTION,
     YEAR_OPTION,
 } from '@/constants/option';
-import getLighting from '../../../../actions/lighting';
 
 const InputBox = ({
     label,
@@ -54,7 +54,7 @@ export default function Drawer() {
                 const res = getLighting({ year, buildingType });
                 if (res) {
                     router.push(
-                        `/${segment}?min=${res.min}&max=${res.max}&avg=${res?.avg}&year=${year}`
+                        `/${segment}?avg=${res?.avg}&year=${year}&type=${buildingType}`
                     );
                 }
             }
@@ -70,7 +70,7 @@ export default function Drawer() {
                 }
             }
         },
-        [year, airtight, segment]
+        [year, buildingType, airtight, segment]
     );
 
     return (
@@ -80,7 +80,9 @@ export default function Drawer() {
         >
             <div className={styles.headerbox}>
                 <div className={styles.header}>실내 환경 진단</div>
-                <div className={styles.subheader}>{MENU[segment].title}</div>
+                <div className={styles.subheader}>
+                    {MENU[segment]?.title ?? ''}
+                </div>
             </div>
             <form className={styles.form} onSubmit={handleSubmit}>
                 <div>
