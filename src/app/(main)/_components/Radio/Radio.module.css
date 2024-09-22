@@ -16,6 +16,14 @@
     color: var(--bluegray-400);
 }
 
+.radiobox > label:has(:disabled),
+.radiobox input[type=radio]:disabled {
+    cursor: not-allowed;
+}
+.radiobox > label:has(:disabled) > span {
+    color: var(--bluegray-400);
+}
+
 .radiobox input[type=radio] {
     -webkit-appearance: none; 
     -moz-appearance: none; 
@@ -29,11 +37,11 @@
     cursor: pointer;
 }
 
-.radiobox > label:hover > input[type=radio]:not(:checked) {
+.radiobox > label:hover > input[type=radio]:not(:checked):not(:disabled) {
     border: 1px solid var(--bluegray-500);
 }
 
-.radiobox > label:hover > input[type=radio]:not(:checked):before {
+.radiobox > label:hover > input[type=radio]:not(:checked):not(:disabled):before {
     position: absolute;
     content: '';
     width: 32px;

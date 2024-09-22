@@ -15,6 +15,7 @@ export default function TextInput({
     disabled,
     placeholder,
     unit,
+    ...props
 }: TextInputProps) {
     return (
         <div className={styles.inputbox}>
@@ -23,6 +24,7 @@ export default function TextInput({
                 value={value}
                 onChange={(e) => onChange(e)}
                 disabled={disabled}
+                {...props}
             />
             {unit && <div className={styles.unit}>{unit}</div>}
         </div>

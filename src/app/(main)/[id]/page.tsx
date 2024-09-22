@@ -7,11 +7,14 @@ import TemperatureChart from './_components/TemperatureChart';
 
 export default function DetailPage({
     params: { id },
-    searchParams: { avg },
+    searchParams: { avg, a, atype, year },
 }: {
     params: { id: keyof typeof MENU };
     searchParams: {
         avg?: string;
+        a?: string;
+        atype?: string
+        year?: string
     };
 }) {
     return (
@@ -23,7 +26,7 @@ export default function DetailPage({
                         {MENU[id].href === 'airtight' ? '은' : '는'}&nbsp;&nbsp;
                         <br />
                         <span className={styles.emphasize}>
-                            <strong>{avg}</strong>
+                            <strong>{a && !Number.isNaN(a) ? Number(a).toFixed(1) : avg}</strong>
                             {MENU[id].href === 'lighting' && (
                                 <span>
                                     &nbsp;W/m<sup>2</sup>
@@ -39,7 +42,13 @@ export default function DetailPage({
                     </h3>
                     {MENU[id].href === 'temperature' && <TemperatureChart />}
                     {MENU[id].href === 'lighting' && <LightingChart />}
-                    {MENU[id].href === 'airtight' && <AirtightChart />}
+                    {MENU[id].href === 'airtight' && 
+                        <AirtightChart 
+                            atype={atype ? Number(atype) : undefined}
+                            year={year ? Number(year) : undefined}
+                            avg={a ? Number(a) : avg ? Number(avg) : undefined}
+                        />
+                    }
                 </>
             ) : (
                 '옵션 선택 후 진단하기 버튼을 눌러주세요.'

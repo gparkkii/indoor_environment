@@ -5,9 +5,10 @@ interface RadioProps {
     checked: string | number;
     option: { label: string; value: string | number }[];
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    disableOption?: Array<string | number>
 }
 
-export default function Radio({ option, checked, onChange }: RadioProps) {
+export default function Radio({ option, checked, onChange, disableOption }: RadioProps) {
     return (
         <fieldset className={styles.radiobox}>
             {option.map(({ label, value }) => (
@@ -18,6 +19,7 @@ export default function Radio({ option, checked, onChange }: RadioProps) {
                         value={value}
                         checked={checked === value}
                         onChange={onChange}
+                        disabled={disableOption? disableOption.includes(value) : false}
                     />
                     <span>{label}</span>
                 </label>

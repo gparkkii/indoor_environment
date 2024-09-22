@@ -14,7 +14,7 @@ interface LightingData {
 
 const lightingData: LightingData[] = [
     {
-        type: '교육사회용',
+        type: '주거용',
         values: [
             { range: '2.0 ~ 4.1', average: 3.4 },
             { range: '2.1 ~ 4.2', average: 3.4 },
@@ -32,17 +32,17 @@ const lightingData: LightingData[] = [
         ],
     },
     {
-        type: '주거용',
+        type: '교육사회용',
         values: [
             { range: '2.4 ~ 5.9', average: 4.7 },
-            { range: '2.8 ~ 6.3', average: 4.8 },
+            { range: '2.8 ~ 6.3', average: 4.9 },
             { range: '3.0 ~ 7.0', average: 5.4 },
             { range: '3.1 ~ 7.2', average: 5.7 },
         ],
     },
 ];
 
-const BUILDING = ['교육사회용', '상업용', '주거용'];
+const BUILDING = ['주거용', '상업용', '교육사회용'];
 
 export default function LightingChart() {
     const searchParams = useSearchParams();
@@ -108,6 +108,13 @@ export default function LightingChart() {
                         ))}
                     </tbody>
                 </table>
+                <div className={styles.caption}>
+                * 주거용 건물 조명기기개수 출처: 국가에너지통계정보시스템,’가구에너지패널조사‘,2021
+                <br/>
+                * 교육사회용, 상업용 건물 조명기기 개수 출처: 국가에너지통계정보시스템, ‘2020년 에너지총조사‘,2022
+                <br/>
+                * 조명소비전력 출처: 에너지관리공단,＇조명기기 이용현황 조사 및 보급기준 연구결과 보고서‘,2014
+                </div>
             </div>
         </div>
     );

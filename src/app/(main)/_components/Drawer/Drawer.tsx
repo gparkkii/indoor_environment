@@ -3,7 +3,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import styles from './Drawer.module.css';
 import { MENU } from '@/constants/menu';
-import { useRouter, useSelectedLayoutSegment } from 'next/navigation';
+import { useRouter, useSearchParams, useSelectedLayoutSegment } from 'next/navigation';
 import Radio from '../Radio/Radio';
 import TextInput from '../TextInput/TextInput';
 import Button from '../Button/Button';
@@ -34,15 +34,46 @@ export default function Drawer() {
     const router = useRouter();
     const segment = useSelectedLayoutSegment() as keyof typeof MENU;
 
+    const searchParams = useSearchParams();
+    const yearIndex = searchParams.get('year');
+    const typeIndex = searchParams.get('type');
+    const atypeIndex = searchParams.get('atype');
+    const aText = searchParams.get('a');
+
     const [buildingType, setBuildingType] = useState<BuildingType.value>(1);
+    const [aBuildingType, setABuildingType] = useState<ABuildingType.value>(1);
     const [year, setYear] = useState<Year.value>(1);
     const [airtight, setAirtight] = useState('');
 
     useEffect(() => {
-        setBuildingType(1);
-        setYear(1);
-        setAirtight('');
-    }, [segment]);
+        let year: Year.value = 1;
+        let type: BuildingType.value = 1;
+        let atype: ABuildingType.value = 1;
+        let a = ''
+        if(yearIndex) {
+            year = Number(yearIndex) as Year.value
+        }
+        if(typeIndex) {
+            type = Number(typeIndex) as BuildingType.value
+        }
+        if(atypeIndex) {
+            atype = Number(atypeIndex) as ABuildingType.value
+        }
+        if(aText) {
+            a = aText
+        }
+        setYear(year);
+        setBuildingType(type);
+        setABuildingType(atype)
+        setAirtight(a);
+    }, [segment, yearIndex, typeIndex, atypeIndex, aText]);
+
+    useEffect(() => {
+      if (segment === 'airtight' && aBuildingType === 2 && [1,2,3].includes(year)) {
+        setYear(4)
+      } 
+    }, [year, aBuildingType, segment])
+    
 
     const handleSubmit = useCallback(
         (e: React.FormEvent<HTMLFormElement>) => {
@@ -61,16 +92,16 @@ export default function Drawer() {
             if (segment === 'airtight') {
                 const res = getAirtightness({
                     year,
-                    airtight,
+                    atype: aBuildingType
                 });
                 if (res) {
                     router.push(
-                        `/${segment}?min=${res.min}&max=${res.max}&avg=${res?.avg}`
+                        `/${segment}?avg=${res?.avg}&year=${year}&a=${airtight}&atype=${aBuildingType}`
                     );
                 }
             }
         },
-        [year, buildingType, airtight, segment]
+        [year, buildingType, airtight, aBuildingType, segment]
     );
 
     return (
@@ -106,6 +137,7 @@ export default function Drawer() {
                             <Radio
                                 checked={year}
                                 option={YEAR_OPTION}
+                                disableOption={ (segment === 'airtight' && aBuildingType === 2) ? [1,2,3] : undefined}
                                 onChange={(e) =>
                                     setYear(
                                         Number(
@@ -118,7 +150,17 @@ export default function Drawer() {
                     )}
                     {segment === 'airtight' && (
                         <InputBox label="건물 선택">
-                            <Radio checked={1} option={BUILDING_OPTION} />
+                            <Radio 
+                                checked={aBuildingType} 
+                                option={BUILDING_OPTION} 
+                                onChange={(e) =>
+                                        setABuildingType(
+                                            Number(
+                                                e.target.value
+                                            ) as unknown as ABuildingType.value
+                                        )
+                                } 
+                            />
                         </InputBox>
                     )}
                     {segment === 'airtight' && (
@@ -133,6 +175,7 @@ export default function Drawer() {
                                         h<sup>-1</sup>
                                     </p>
                                 }
+                                step='0.1'
                             />
                         </InputBox>
                     )}
