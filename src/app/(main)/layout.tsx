@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import styles from './layout.module.css';
 import Nav from './_components/Nav/Nav';
 import Drawer from './_components/Drawer/Drawer';
@@ -11,7 +11,9 @@ export default function MainLayout({
     return (
         <div className={styles.layout}>
             <Nav />
-            <Drawer />
+            <Suspense fallback={null}>
+                <Drawer />
+            </Suspense>
             {children}
         </div>
     );

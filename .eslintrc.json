@@ -10,7 +10,7 @@
     "parserOptions": {
         "project": "./tsconfig.json"
     },
-    "plugins": ["react", "react-hooks", "react-typescript", "prettier"],
+    "plugins": ["react", "react-hooks", "prettier"],
     "rules": {
         "import/no-unresolved": "off",
         "import/export": "off",

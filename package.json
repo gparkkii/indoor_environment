@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "apexcharts": "^3.53.0",
-    "eslint-plugin-react": "^7.36.1",
     "next": "14.2.9",
     "prettier": "^3.3.3",
     "react": "^18",
@@ -26,6 +25,7 @@
     "eslint-config-airbnb-typescript": "^18.0.0",
     "eslint-config-next": "14.2.9",
     "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-react": "^7.36.1",
     "eslint-plugin-react-hooks": "^4.6.2",
     "typescript": "^5"
   }
