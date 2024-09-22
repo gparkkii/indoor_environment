@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "apexcharts": "^3.53.0",
+    "eslint-plugin-react": "^7.36.1",
     "next": "14.2.9",
     "prettier": "^3.3.3",
     "react": "^18",
