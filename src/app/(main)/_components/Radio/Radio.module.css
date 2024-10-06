@@ -6,42 +6,44 @@
 
 .radiobox > label {
     position: relative;
-	display: flex;
+    display: flex;
     flex-direction: row;
-	align-items: center;
-	gap: 12px;
-	cursor: pointer;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
     font-size: 15px;
     text-align: left;
     color: var(--bluegray-400);
 }
 
 .radiobox > label:has(:disabled),
-.radiobox input[type=radio]:disabled {
+.radiobox input[type='radio']:disabled {
     cursor: not-allowed;
 }
 .radiobox > label:has(:disabled) > span {
     color: var(--bluegray-400);
 }
 
-.radiobox input[type=radio] {
-    -webkit-appearance: none; 
-    -moz-appearance: none; 
-    appearance: none; 
+.radiobox input[type='radio'] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
     width: 18px;
     height: 18px;
     margin: 0px;
     border: 1px solid var(--bluegray-400);
     border-radius: 50%;
-    outline: none; 
+    outline: none;
     cursor: pointer;
 }
 
-.radiobox > label:hover > input[type=radio]:not(:checked):not(:disabled) {
+.radiobox > label:hover > input[type='radio']:not(:checked):not(:disabled) {
     border: 1px solid var(--bluegray-500);
 }
 
-.radiobox > label:hover > input[type=radio]:not(:checked):not(:disabled):before {
+.radiobox
+    > label:hover
+    > input[type='radio']:not(:checked):not(:disabled):before {
     position: absolute;
     content: '';
     width: 32px;
@@ -53,22 +55,20 @@
     z-index: 1;
 }
 
-
-.radiobox > label:hover > input[type=radio]:checked:before {
+.radiobox > label:hover > input[type='radio']:checked:before {
     position: absolute;
     content: '';
     width: 32px;
     height: 32px;
     top: -7px;
     left: -7px;
-    background-color: rgb(0,197,115,0.1);
+    background-color: rgb(0, 197, 115, 0.1);
     border-radius: 100px;
     z-index: 1;
 }
 
-
 .radiobox input[type='radio']:checked {
-    background-color: var(--color-primary); 
-    border: 3px solid var(--color-bg); 
+    background-color: var(--color-primary);
+    border: 3px solid var(--color-bg);
     box-shadow: 0 0 0 1px var(--color-primary);
 }
