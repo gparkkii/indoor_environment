@@ -13,46 +13,6 @@
     border: 0;
 }
 
-.file-row {
-    display: inline-flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 12px;
-    height: 42px;
-    background-color: #fff;
-    border-radius: 4px;
-    box-shadow: rgba(120, 120, 120, 0.05) 0px 2px 4px;
-}
-
-.file-row > p {
-    font-size: 15px;
-    font-weight: 500;
-    color: var(--bluegray-400);
-}
-
-.file {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    width: 90%;
-    font-size: 16px;
-    font-weight: 600;
-}
-
-.delete {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 16px;
-    height: 16px;
-    border-radius: 100px;
-    background-color: var(--color-error);
-    box-shadow: rgba(120, 120, 120, 0.05) 0px 2px 4px;
-}
-.delete:hover {
-    background-color: var(--color-error-dark);
-}
-
 .button-box {
     display: inline-flex;
     align-items: center;

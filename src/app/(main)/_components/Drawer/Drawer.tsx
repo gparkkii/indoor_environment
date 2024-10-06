@@ -251,7 +251,9 @@ export default function Drawer() {
                         </InputBox>
                     )}
                 </div>
-                <Button type="submit">진단하기</Button>
+                <Button type="submit" disabled={segment === 'temperature'}>
+                    진단하기
+                </Button>
             </form>
         </div>
     );

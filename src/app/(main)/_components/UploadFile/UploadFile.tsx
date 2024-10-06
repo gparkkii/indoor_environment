@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styles from './UploadFile.module.css';
-import Image from 'next/image';
 import CsvIcon from '@/assets/icons/csv.svg';
-import DeleteIcon from '@/assets/icons/delete.svg';
+import SelectedFile from '../SelectedFile/SelectedFile';
 
 interface UploadFileProps {
     file: File | null;
@@ -35,35 +34,12 @@ export default function UploadFile({
 
     return (
         <div className={styles.filebox}>
-            <div className={styles['file-row']}>
-                {file ? (
-                    <>
-                        <div className={styles.file}>
-                            <Image
-                                src={CsvIcon}
-                                alt="csv"
-                                width={22}
-                                height={22}
-                            />
-                            {file.name}
-                        </div>
-                        <button
-                            className={styles.delete}
-                            type="button"
-                            onClick={handleDelete}
-                        >
-                            <Image
-                                src={DeleteIcon}
-                                alt="csv"
-                                width={10}
-                                height={10}
-                            />
-                        </button>
-                    </>
-                ) : (
-                    <p>파일을 선택해주세요.</p>
-                )}
-            </div>
+            <SelectedFile
+                filename={file?.name}
+                icon={CsvIcon}
+                handleDelete={handleDelete}
+                placeholder="측정 데이터를 선택해주세요."
+            />
             <div className={styles['button-box']}>
                 <label htmlFor="upload-file">파일 불러오기</label>
                 <button type="button" onClick={handleSample}>

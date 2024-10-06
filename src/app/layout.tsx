@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
 import { Inter, Lato, Montserrat, Poppins, Rubik } from 'next/font/google';
+import Script from 'next/script';
 
 const lato = Lato({
     weight: ['400', '700', '900'],
@@ -39,7 +40,7 @@ export default function RootLayout({
             >
                 <main>{children}</main>
             </body>
-            <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+            <Script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></Script>
         </html>
     );
 }

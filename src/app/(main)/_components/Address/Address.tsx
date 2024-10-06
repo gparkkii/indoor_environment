@@ -3,7 +3,10 @@ import DaumPostcode from 'react-daum-postcode';
 import Button from '../Button/Button';
 import styles from './Address.module.css';
 import CloseIcon from '@/assets/icons/cancel.svg';
+import LocationIcon from '@/assets/icons/location.svg';
 import Image from 'next/image';
+import { getGeocoder } from '@/actions/address';
+import SelectedFile from '../SelectedFile/SelectedFile';
 
 interface AddressProps {
     disabled?: boolean;
@@ -11,12 +14,31 @@ interface AddressProps {
 
 export default function Address({ disabled }: AddressProps) {
     const [open, setOpen] = useState(false);
-    const onCompletePost = (data: any) => {
-        console.log(data);
+
+    const [observatory, setObservatory] = useState<string | null>(null);
+    const onCompletePost = async (data: any) => {
+        const geocoder = await getGeocoder(data.address);
+        if (geocoder) {
+            setObservatory(`${geocoder?.location}(${geocoder.id})`);
+        } else {
+            alert('관측소를 불러올 수 없습니다.');
+        }
+    };
+
+    const handleDelete = () => {
+        setObservatory(null);
     };
 
     return (
-        <div>
+        <div className={styles.container}>
+            <div className={styles.observatory}>
+                <SelectedFile
+                    icon={LocationIcon}
+                    filename={observatory}
+                    handleDelete={handleDelete}
+                    placeholder="측정 위치를 선택해주세요."
+                />
+            </div>
             <Button
                 styleType="outlined"
                 style={{ height: '44px', fontSize: '15px' }}
