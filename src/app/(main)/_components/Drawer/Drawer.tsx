@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useCallback, useEffect, useState } from 'react';
-import styles from './Drawer.module.css';
 import { MENU } from '@/constants/menu';
 import {
     useRouter,
@@ -20,6 +19,8 @@ import {
 } from '@/constants/option';
 import UploadFile from '../UploadFile/UploadFile';
 import Address from '../Address/Address';
+import { getGeocoder } from '@/actions/address';
+import styles from './Drawer.module.css';
 
 const InputBox = ({
     label,
@@ -45,10 +46,6 @@ export default function Drawer() {
     const typeIndex = searchParams.get('type');
     const atypeIndex = searchParams.get('atype');
     const aText = searchParams.get('a');
-
-    // temperature
-    const [file, setFile] = useState<File | null>(null);
-    const [isSampleFile, setIsSampleFile] = useState(false);
 
     const [buildingType, setBuildingType] = useState<BuildingType.value>(1);
     const [aBuildingType, setABuildingType] = useState<ABuildingType.value>(1);
@@ -88,6 +85,9 @@ export default function Drawer() {
         }
     }, [year, aBuildingType, segment]);
 
+    // temperature -> file
+    const [file, setFile] = useState<File | null>(null);
+    const [isSampleFile, setIsSampleFile] = useState(false);
     const getSampleFile = async () => {
         try {
             const response = await fetch('/assets/files/sample.csv');
@@ -102,16 +102,35 @@ export default function Drawer() {
             alert('샘플 파일을 불러올 수 없습니다.');
         }
     };
-
     const handleFile = (file: File) => {
         setFile(file);
         setIsSampleFile(false);
     };
-
     const deleteFile = () => {
         setFile(null);
         setIsSampleFile(false);
     };
+
+    // temperature -> location
+    const [observatory, setObservatory] = useState<string | null>(null);
+    const handleAddress = async (data: any) => {
+        const geocoder = await getGeocoder(data.address);
+        if (geocoder) {
+            setObservatory(`${geocoder?.location}(${geocoder.id})`);
+        } else {
+            alert('관측소를 불러올 수 없습니다.');
+        }
+    };
+    const deleteAddress = () => {
+        setObservatory(null);
+    };
+
+    useEffect(() => {
+        if (segment === 'temperature' && isSampleFile) {
+            setObservatory(null);
+            setBuildingType(0 as unknown as BuildingType.value);
+        }
+    }, [segment, isSampleFile]);
 
     const handleSubmit = useCallback(
         (e: React.FormEvent<HTMLFormElement>) => {
@@ -168,6 +187,9 @@ export default function Drawer() {
                     {segment === 'temperature' && (
                         <InputBox label="측정 위치 선택">
                             <Address
+                                observatory={observatory}
+                                handleAddress={handleAddress}
+                                handleDelete={deleteAddress}
                                 disabled={
                                     segment === 'temperature' && isSampleFile
                                 }
@@ -177,11 +199,7 @@ export default function Drawer() {
                     {(segment === 'temperature' || segment === 'lighting') && (
                         <InputBox label="건물용도 선택">
                             <Radio
-                                checked={
-                                    segment === 'temperature' && isSampleFile
-                                        ? 0
-                                        : buildingType
-                                }
+                                checked={buildingType}
                                 option={BUILDING_TYPE_OPTION}
                                 onChange={(e) =>
                                     setBuildingType(

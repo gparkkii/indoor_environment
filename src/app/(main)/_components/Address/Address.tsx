@@ -5,29 +5,22 @@ import styles from './Address.module.css';
 import CloseIcon from '@/assets/icons/cancel.svg';
 import LocationIcon from '@/assets/icons/location.svg';
 import Image from 'next/image';
-import { getGeocoder } from '@/actions/address';
 import SelectedFile from '../SelectedFile/SelectedFile';
 
 interface AddressProps {
+    observatory?: string | null;
+    handleDelete: () => void;
+    handleAddress: (data: any) => void;
     disabled?: boolean;
 }
 
-export default function Address({ disabled }: AddressProps) {
+export default function Address({
+    observatory,
+    handleDelete,
+    handleAddress,
+    disabled,
+}: AddressProps) {
     const [open, setOpen] = useState(false);
-
-    const [observatory, setObservatory] = useState<string | null>(null);
-    const onCompletePost = async (data: any) => {
-        const geocoder = await getGeocoder(data.address);
-        if (geocoder) {
-            setObservatory(`${geocoder?.location}(${geocoder.id})`);
-        } else {
-            alert('관측소를 불러올 수 없습니다.');
-        }
-    };
-
-    const handleDelete = () => {
-        setObservatory(null);
-    };
 
     return (
         <div className={styles.container}>
@@ -73,7 +66,7 @@ export default function Address({ disabled }: AddressProps) {
                                 theme={{
                                     bgColor: '#fff',
                                 }}
-                                onComplete={onCompletePost}
+                                onComplete={handleAddress}
                                 onClose={() => {
                                     setOpen(false);
                                 }}
