@@ -22,6 +22,8 @@ import {
 import UploadFile from '../UploadFile/UploadFile';
 import Address from '../Address/Address';
 import { getGeocoder } from '@/actions/temperature/address';
+import Modal from '../Modal/Modal';
+import ProcessModal from '../Modal/ProcessModal';
 
 const InputBox = ({
     label,
@@ -49,6 +51,9 @@ export default function Drawer() {
     const aText = searchParams.get('a');
 
     // temperature
+    const [open, setOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [process, setProcess] = useState('');
     const [isSampleFile, setIsSampleFile] = useState(false);
     const [file, setFile] = useState<File | null>(null);
     const [observatory, setObservatory] = useState<string | null>(null);
@@ -140,11 +145,14 @@ export default function Drawer() {
     };
 
     const handleSubmit = useCallback(
-        (e: React.FormEvent<HTMLFormElement>) => {
+        async (e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault();
             if (segment === 'temperature') {
                 if (file) {
-                    processFile(file);
+                    setOpen(true);
+                    setLoading(true);
+                    await processFile(file, setProcess);
+                    setLoading(false);
                 }
             }
             if (segment === 'lighting') {
@@ -286,6 +294,14 @@ export default function Drawer() {
                     진단하기
                 </Button>
             </form>
+            <ProcessModal
+                open={open}
+                process={process}
+                loading={loading}
+                onClose={() => {
+                    setOpen(false);
+                }}
+            />
         </div>
     );
 }
