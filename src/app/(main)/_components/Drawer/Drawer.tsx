@@ -1,7 +1,11 @@
 'use client';
 
+<<<<<<< HEAD
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import styles from './Drawer.module.css';
+=======
+import React, { useCallback, useEffect, useState } from 'react';
+>>>>>>> 95de7cfbed9601e8830ae0d0d2b71c5d4c344e87
 import { MENU } from '@/constants/menu';
 import {
     useRouter,
@@ -21,9 +25,14 @@ import {
 } from '@/constants/option';
 import UploadFile from '../UploadFile/UploadFile';
 import Address from '../Address/Address';
+<<<<<<< HEAD
 import { getGeocoder } from '@/actions/temperature/address';
 import Modal from '../Modal/Modal';
 import ProcessModal from '../Modal/ProcessModal';
+=======
+import { getGeocoder } from '@/actions/address';
+import styles from './Drawer.module.css';
+>>>>>>> 95de7cfbed9601e8830ae0d0d2b71c5d4c344e87
 
 const InputBox = ({
     label,
@@ -105,6 +114,7 @@ export default function Drawer() {
         }
     }, [year, aBuildingType, segment]);
 
+    // temperature -> file
     const getSampleFile = async () => {
         try {
             const response = await fetch('/assets/files/sample.csv');
@@ -120,18 +130,17 @@ export default function Drawer() {
             alert('샘플 파일을 불러올 수 없습니다.');
         }
     };
-
     const handleFile = (file: File) => {
         setFile(file);
         setIsSampleFile(false);
     };
-
     const deleteFile = () => {
         setFile(null);
         setIsSampleFile(false);
     };
 
-    const onCompletePost = async (data: any) => {
+    // temperature -> location
+    const handleAddress = async (data: any) => {
         const geocoder = await getGeocoder(data.address);
         if (geocoder) {
             setObservatory(`${geocoder?.location}(${geocoder.id})`);
@@ -139,10 +148,16 @@ export default function Drawer() {
             alert('관측소를 불러올 수 없습니다.');
         }
     };
-
-    const handleDelete = () => {
+    const deleteAddress = () => {
         setObservatory(null);
     };
+
+    useEffect(() => {
+        if (segment === 'temperature' && isSampleFile) {
+            setObservatory(null);
+            setBuildingType(0 as unknown as BuildingType.value);
+        }
+    }, [segment, isSampleFile]);
 
     const handleSubmit = useCallback(
         async (e: React.FormEvent<HTMLFormElement>) => {
@@ -205,8 +220,8 @@ export default function Drawer() {
                         <InputBox label="측정 위치 선택">
                             <Address
                                 observatory={observatory}
-                                handleComplete={onCompletePost}
-                                handleDelete={handleDelete}
+                                handleAddress={handleAddress}
+                                handleDelete={deleteAddress}
                                 disabled={
                                     segment === 'temperature' && isSampleFile
                                 }
@@ -216,11 +231,7 @@ export default function Drawer() {
                     {(segment === 'temperature' || segment === 'lighting') && (
                         <InputBox label="건물용도 선택">
                             <Radio
-                                checked={
-                                    segment === 'temperature' && isSampleFile
-                                        ? 0
-                                        : buildingType
-                                }
+                                checked={buildingType}
                                 option={BUILDING_TYPE_OPTION}
                                 onChange={(e) =>
                                     setBuildingType(

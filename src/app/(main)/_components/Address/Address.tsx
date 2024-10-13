@@ -8,16 +8,16 @@ import Image from 'next/image';
 import SelectedFile from '../SelectedFile/SelectedFile';
 
 interface AddressProps {
-    observatory: string | null;
+    observatory?: string | null;
     handleDelete: () => void;
-    handleComplete: (data: any) => void;
+    handleAddress: (data: any) => void;
     disabled?: boolean;
 }
 
 export default function Address({
     observatory,
     handleDelete,
-    handleComplete,
+    handleAddress,
     disabled,
 }: AddressProps) {
     const [open, setOpen] = useState(false);
@@ -70,7 +70,7 @@ export default function Address({
                                 theme={{
                                     bgColor: '#fff',
                                 }}
-                                onComplete={handleComplete}
+                                onComplete={handleAddress}
                                 onClose={() => {
                                     setOpen(false);
                                 }}
