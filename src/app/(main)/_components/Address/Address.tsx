@@ -1,33 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import DaumPostcode from 'react-daum-postcode';
 import Button from '../Button/Button';
 import styles from './Address.module.css';
 import CloseIcon from '@/assets/icons/cancel.svg';
 import LocationIcon from '@/assets/icons/location.svg';
 import Image from 'next/image';
-import { getGeocoder } from '@/actions/address';
 import SelectedFile from '../SelectedFile/SelectedFile';
 
 interface AddressProps {
+    observatory: string | null;
+    handleDelete: () => void;
+    handleComplete: (data: any) => void;
     disabled?: boolean;
 }
 
-export default function Address({ disabled }: AddressProps) {
+export default function Address({
+    observatory,
+    handleDelete,
+    handleComplete,
+    disabled,
+}: AddressProps) {
     const [open, setOpen] = useState(false);
-
-    const [observatory, setObservatory] = useState<string | null>(null);
-    const onCompletePost = async (data: any) => {
-        const geocoder = await getGeocoder(data.address);
-        if (geocoder) {
-            setObservatory(`${geocoder?.location}(${geocoder.id})`);
-        } else {
-            alert('관측소를 불러올 수 없습니다.');
-        }
-    };
-
-    const handleDelete = () => {
-        setObservatory(null);
-    };
 
     return (
         <div className={styles.container}>
@@ -41,7 +34,11 @@ export default function Address({ disabled }: AddressProps) {
             </div>
             <Button
                 styleType="outlined"
-                style={{ height: '44px', fontSize: '15px' }}
+                style={{
+                    height: '40px',
+                    fontSize: '14px',
+                    gap: '6px',
+                }}
                 disabled={disabled}
                 onClick={() => {
                     setOpen(true);
@@ -73,7 +70,7 @@ export default function Address({ disabled }: AddressProps) {
                                 theme={{
                                     bgColor: '#fff',
                                 }}
-                                onComplete={onCompletePost}
+                                onComplete={handleComplete}
                                 onClose={() => {
                                     setOpen(false);
                                 }}

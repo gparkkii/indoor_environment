@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import styles from './Drawer.module.css';
 import { MENU } from '@/constants/menu';
 import {
@@ -13,6 +13,7 @@ import TextInput from '../TextInput/TextInput';
 import Button from '../Button/Button';
 import getAirtightness from '@/actions/airtightness';
 import getLighting from '@/actions/lighting';
+import { processFile } from '@/actions/temperature/csv';
 import {
     BUILDING_OPTION,
     BUILDING_TYPE_OPTION,
@@ -20,6 +21,7 @@ import {
 } from '@/constants/option';
 import UploadFile from '../UploadFile/UploadFile';
 import Address from '../Address/Address';
+import { getGeocoder } from '@/actions/temperature/address';
 
 const InputBox = ({
     label,
@@ -47,13 +49,23 @@ export default function Drawer() {
     const aText = searchParams.get('a');
 
     // temperature
-    const [file, setFile] = useState<File | null>(null);
     const [isSampleFile, setIsSampleFile] = useState(false);
+    const [file, setFile] = useState<File | null>(null);
+    const [observatory, setObservatory] = useState<string | null>(null);
 
     const [buildingType, setBuildingType] = useState<BuildingType.value>(1);
     const [aBuildingType, setABuildingType] = useState<ABuildingType.value>(1);
     const [year, setYear] = useState<Year.value>(1);
     const [airtight, setAirtight] = useState('');
+
+    // temperature disabled
+    const disabled = useMemo(
+        () =>
+            segment === 'temperature' &&
+            !isSampleFile &&
+            (!file || !observatory),
+        [segment, isSampleFile, file, observatory]
+    );
 
     useEffect(() => {
         let year: Year.value = 1;
@@ -96,6 +108,7 @@ export default function Drawer() {
                 type: 'text/csv',
             });
             setFile(newFile);
+            setObservatory(null);
             setIsSampleFile(true);
         } catch (error) {
             console.error('Error fetching the sample file:', error);
@@ -113,11 +126,26 @@ export default function Drawer() {
         setIsSampleFile(false);
     };
 
+    const onCompletePost = async (data: any) => {
+        const geocoder = await getGeocoder(data.address);
+        if (geocoder) {
+            setObservatory(`${geocoder?.location}(${geocoder.id})`);
+        } else {
+            alert('관측소를 불러올 수 없습니다.');
+        }
+    };
+
+    const handleDelete = () => {
+        setObservatory(null);
+    };
+
     const handleSubmit = useCallback(
         (e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault();
             if (segment === 'temperature') {
-                // TODO: API 요청
+                if (file) {
+                    processFile(file);
+                }
             }
             if (segment === 'lighting') {
                 const res = getLighting({ year, buildingType });
@@ -139,7 +167,7 @@ export default function Drawer() {
                 }
             }
         },
-        [year, buildingType, airtight, aBuildingType, segment]
+        [year, buildingType, airtight, aBuildingType, segment, file]
     );
 
     return (
@@ -168,6 +196,9 @@ export default function Drawer() {
                     {segment === 'temperature' && (
                         <InputBox label="측정 위치 선택">
                             <Address
+                                observatory={observatory}
+                                handleComplete={onCompletePost}
+                                handleDelete={handleDelete}
                                 disabled={
                                     segment === 'temperature' && isSampleFile
                                 }
@@ -251,7 +282,7 @@ export default function Drawer() {
                         </InputBox>
                     )}
                 </div>
-                <Button type="submit" disabled={segment === 'temperature'}>
+                <Button type="submit" disabled={disabled}>
                     진단하기
                 </Button>
             </form>

@@ -1,4 +1,4 @@
-import { LATLNG } from '../constants/latlng';
+import { LATLNG } from '../../constants/latlng';
 
 // 주어진 좌표와 가장 가까운 location을 찾는 함수
 function findClosestLocation(latitude: number, longitude: number) {
