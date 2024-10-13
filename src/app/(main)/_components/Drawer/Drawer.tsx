@@ -1,11 +1,7 @@
 'use client';
 
-<<<<<<< HEAD
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import styles from './Drawer.module.css';
-=======
-import React, { useCallback, useEffect, useState } from 'react';
->>>>>>> 95de7cfbed9601e8830ae0d0d2b71c5d4c344e87
 import { MENU } from '@/constants/menu';
 import {
     useRouter,
@@ -25,14 +21,8 @@ import {
 } from '@/constants/option';
 import UploadFile from '../UploadFile/UploadFile';
 import Address from '../Address/Address';
-<<<<<<< HEAD
 import { getGeocoder } from '@/actions/temperature/address';
-import Modal from '../Modal/Modal';
 import ProcessModal from '../Modal/ProcessModal';
-=======
-import { getGeocoder } from '@/actions/address';
-import styles from './Drawer.module.css';
->>>>>>> 95de7cfbed9601e8830ae0d0d2b71c5d4c344e87
 
 const InputBox = ({
     label,
