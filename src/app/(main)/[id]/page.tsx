@@ -81,7 +81,7 @@ export default function DetailPage({
                                         coordinate_1={[hTemp, hTempIn]}
                                         coordinate_2={[cTemp, cTempIn]}
                                     />
-                                    <div style={{ height: 48 }} />
+                                    <div style={{ height: 100 }} />
                                     <HumidityGraph />
                                 </div>
                             </div>

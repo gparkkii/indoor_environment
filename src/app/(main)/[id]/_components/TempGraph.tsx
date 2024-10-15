@@ -69,7 +69,7 @@ const TempGraph = ({ coordinate_1, coordinate_2 }: TempGraphProps) => {
         yaxis: {
             labels: {
                 style: {
-                    colors: '#64748b',
+                    colors: '#94a3b8',
                 },
             },
             tickAmount: 6,
@@ -87,7 +87,7 @@ const TempGraph = ({ coordinate_1, coordinate_2 }: TempGraphProps) => {
             categories: Array.from({ length: 31 }, (_, i) => i.toString()),
             labels: {
                 style: {
-                    colors: '#64748b',
+                    colors: '#94a3b8',
                 },
                 formatter: (value) => (parseInt(value) % 5 === 0 ? value : ''),
             },
