@@ -15,6 +15,7 @@ export default function Button({
 }: ButtonProps) {
     return (
         <button
+            type="button"
             className={
                 styleType === 'outlined' ? styles.outlined : styles.primary
             }

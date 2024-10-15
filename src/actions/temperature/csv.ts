@@ -1,5 +1,7 @@
-import { DataRow } from './@types';
-import { calculateVaporPressure } from './calculation';
+import { DataRow, MProcessedDataRow, WProcessedDataRow } from './@types';
+import { calculateHumi } from './calculateHumi';
+import { calculateVaporPressure } from './calculatePSaturated';
+import { calculateTemp } from './calculateTemp';
 import { getWthrDataList } from './kmaData';
 import { calculate24HourMovingAverage } from './resampleData';
 // CSV를 파싱하는 함수
@@ -83,14 +85,13 @@ export const processFile = async (
     try {
         const parsedData = await handleFileUpload(file);
 
+        console.log('측정 데이터 이동평균 구하는 중...');
         setProcess('측정 데이터 이동평균 구하는 중...');
-        const resampledData = await calculate24HourMovingAverage(
-            parsedData,
-            'm'
-        );
+        const { result: mResult, data: resampledData } =
+            await calculate24HourMovingAverage(parsedData, 'm');
         console.log('측정 데이터 이동평균 :', { resampledData });
 
-        if (resampledData && resampledData.length > 0) {
+        if (mResult === 'success') {
             const stnIds = resampledData[0].userStnId.toString(); // stnIds
             const firstDate = resampledData[0].tm; // 최초 일자
             const lastDate = resampledData[resampledData.length - 1].tm; // 마지막 일자
@@ -107,6 +108,7 @@ export const processFile = async (
                 `${padStringFormat(lastDate.getDate())}`;
             const endHh = `${padStringFormat(lastDate.getHours())}`;
 
+            console.log('기상청 데이터 불러오는 중...');
             setProcess('기상청 데이터 불러오는 중...');
             const wthrData = await getWthrDataList({
                 startDt,
@@ -117,33 +119,83 @@ export const processFile = async (
             });
             console.log('기상청 데이터 :', { wthrData });
 
+            console.log('기상청 데이터 이동평균 구하는 중...');
             setProcess('기상청 데이터 이동평균 구하는 중...');
-            const resampledWthrData = await calculate24HourMovingAverage(
-                wthrData,
-                'w'
-            );
-            console.log('기상청 데이터 이동평균 :', { resampledWthrData });
+            const { result: wResult, data: resampledWthrData } =
+                await calculate24HourMovingAverage(wthrData, 'w');
+            console.log('기상청 데이터 이동평균 :', wResult, resampledWthrData);
 
+            console.log('측정 데이터 + 기상청 데이터 결합중..');
             setProcess('측정 데이터 + 기상청 데이터 결합중..');
-            if (resampledWthrData) {
+            if (wResult === 'success') {
                 const mergedData = mergeDataByTime(
                     resampledData,
                     resampledWthrData
                 );
                 console.log('결합된 데이터', mergedData);
 
+                console.log('수증기 분압차 계산중...');
                 setProcess('수증기 분압차 계산중...');
                 const { pi, po, pdiff } = calculateVaporPressure(mergedData);
-                setProcess('수증기 분압차 계산 완료');
-
                 console.log('수증기 분압차 계산 완료', { pi, po, pdiff });
+
+                const wTemp = mergedData.map((row) => row.wTemp);
+                const mTemp = mergedData.map((row) => row.mTemp);
+
+                console.log('hHumi, cHumi 계산중...');
+                setProcess('hHumi, cHumi 계산중...');
+                const { cHumi, cHumiRSquared, hHumi, hHumiRSquared, hPDiff } =
+                    calculateHumi({
+                        wTemp: wTemp,
+                        pdiff,
+                    });
+                console.log('hHumi, cHumi 계산 완료', {
+                    cHumi,
+                    cHumiRSquared,
+                    hHumi,
+                    hHumiRSquared,
+                    hPDiff,
+                });
+
+                console.log('hTemp, hTemp 계산중...');
+                setProcess('hTemp, hTemp 계산중...');
+
+                const {
+                    cTemp,
+                    cTempIn,
+                    cTempRSquared,
+                    hTemp,
+                    hTempIn,
+                    hTempRSquared,
+                } = calculateTemp(wTemp, mTemp);
+                console.log('hTemp, hTemp 계산 완료', {
+                    cTemp,
+                    cTempIn,
+                    cTempRSquared,
+                    hTemp,
+                    hTempIn,
+                    hTempRSquared,
+                });
+
+                const returnResult = {
+                    cHumi: cHumi.toFixed(1),
+                    hHumi: hHumi.toFixed(1),
+                    hPDiff: hPDiff.toFixed(1),
+                    cTemp: cTemp.toFixed(1),
+                    cTempIn: cTempIn.toFixed(1),
+                    hTemp: hTemp.toFixed(1),
+                    hTempIn: hTempIn.toFixed(1),
+                };
+                console.log('계산 완료', returnResult);
+                return returnResult;
             } else {
-                setProcess('결합할 기상청 데이터가 없습니다.');
+                setProcess('기상청 데이터 이동평균을 불러오지 못했습니다..');
             }
         } else {
-            setProcess('No data available.');
+            setProcess('측정 데이터 이동평균을 불러오지 못했습니다.');
         }
     } catch (error) {
         setProcess(`Error reading file: ${error}`);
     }
+    return null;
 };

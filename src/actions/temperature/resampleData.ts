@@ -1,4 +1,9 @@
-import { DataRow, ParsedDataRow, ProcessedDataRow } from './@types';
+import {
+    DataRow,
+    MProcessedDataRow,
+    ParsedDataRow,
+    WProcessedDataRow,
+} from './@types';
 
 // 시간 데이터를 Date 객체로 변환하고, 날짜 형식 검증
 const convertToDate = (data: DataRow[]): ParsedDataRow[] => {
@@ -24,9 +29,7 @@ const checkHourlyInterval = (data: ParsedDataRow[]) => {
         return (current.getTime() - previous.getTime()) / (1000 * 60 * 60);
     });
 
-    return intervals.every(
-        (interval) => interval === 0 || interval === 1 || interval === 4
-    );
+    return intervals.every((interval) => interval === 0 || interval === 1);
 };
 
 // 시간 단위로 리샘플링 (평균 값으로 계산)
@@ -55,7 +58,8 @@ const calculateMovingAverage = (
     hours: number,
     type: 'm' | 'w'
 ) => {
-    const movingAverageData: ProcessedDataRow[] = [];
+    const mMovingAverageData: MProcessedDataRow[] = [];
+    const wMovingAverageData: WProcessedDataRow[] = [];
 
     data.forEach((entry, index) => {
         const startIndex = Math.max(0, index - hours + 1); // 24시간 이전 데이터까지 포함
@@ -69,14 +73,14 @@ const calculateMovingAverage = (
         const humiAvg = humiSum / rangeData.length;
 
         if (type === 'm') {
-            movingAverageData.push({
+            mMovingAverageData.push({
                 ...entry,
                 mTemp: tempAvg,
                 mHumi: humiAvg,
                 userStnId: entry.stnId,
             });
         } else {
-            movingAverageData.push({
+            wMovingAverageData.push({
                 ...entry,
                 wTemp: tempAvg,
                 wHumi: humiAvg,
@@ -85,14 +89,17 @@ const calculateMovingAverage = (
         }
     });
 
-    return movingAverageData;
+    return type === 'm' ? mMovingAverageData : wMovingAverageData;
 };
 
 // 리샘플링된 데이터를 사용하여 24시간 이동평균 계산
 export const calculate24HourMovingAverage = async (
     parsedData: DataRow[],
     type: 'm' | 'w'
-) => {
+): Promise<{
+    result: 'success' | 'error';
+    data: WProcessedDataRow[] | MProcessedDataRow[];
+}> => {
     try {
         const convertedData = convertToDate(parsedData);
 
@@ -109,7 +116,7 @@ export const calculate24HourMovingAverage = async (
                 type
             );
             console.log('24-hour Moving Average Data');
-            return movingAverageData;
+            return { result: 'success', data: movingAverageData };
         } else {
             const movingAverageData = calculateMovingAverage(
                 sortedData,
@@ -119,10 +126,10 @@ export const calculate24HourMovingAverage = async (
             console.log(
                 'Data is already in hourly intervals with 24-hour Moving Average'
             );
-            return movingAverageData;
+            return { result: 'success', data: movingAverageData };
         }
     } catch (error) {
         console.error('An error occurred:', error);
-        alert(`An error occurred: ${error}`);
+        return { result: 'error', data: [] };
     }
 };

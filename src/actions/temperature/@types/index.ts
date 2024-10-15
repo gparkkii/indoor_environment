@@ -12,10 +12,24 @@ export interface ParsedDataRow {
     humi: number;
 }
 
-export interface ProcessedDataRow extends ParsedDataRow {
-    mTemp?: number;
-    mHumi?: number;
-    wTemp?: number;
-    wHumi?: number;
+export interface MProcessedDataRow extends ParsedDataRow {
+    mTemp: number;
+    mHumi: number;
     userStnId: number;
+}
+
+export interface WProcessedDataRow extends ParsedDataRow {
+    wTemp: number;
+    wHumi: number;
+    userStnId: number;
+}
+
+export interface processResult {
+    cHumi: number;
+    hHumi: number;
+    hPDiff: number;
+    cTemp: number;
+    cTempIn: number;
+    hTemp: number;
+    hTempIn: number;
 }

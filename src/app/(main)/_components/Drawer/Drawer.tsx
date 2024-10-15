@@ -156,7 +156,15 @@ export default function Drawer() {
                 if (file) {
                     setOpen(true);
                     setLoading(true);
-                    await processFile(file, setProcess);
+                    const result = await processFile(file, setProcess);
+                    if (result !== null) {
+                        setOpen(false);
+                        let url = `/${segment}?result=${encodeURI(JSON.stringify(result))}`;
+                        if (buildingType) {
+                            url += `&type=${buildingType}`;
+                        }
+                        router.push(url);
+                    }
                     setLoading(false);
                 }
             }
