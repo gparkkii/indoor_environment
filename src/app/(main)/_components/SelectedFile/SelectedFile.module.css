@@ -8,12 +8,21 @@
     background-color: #fff;
     border-radius: 4px;
     box-shadow: rgba(120, 120, 120, 0.05) 0px 2px 4px;
-}
-
-.file-row > p {
     font-size: 15px;
     font-weight: 500;
     color: var(--bluegray-400);
+    cursor: pointer;
+}
+
+.disabled {
+    color: var(--bluegray-300);
+    background-color: #f9f9fd;
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
+.file-row path {
+    stroke: #fff !important;
 }
 
 .file {

@@ -143,9 +143,13 @@ export default function Drawer() {
     };
 
     useEffect(() => {
-        if (segment === 'temperature' && isSampleFile) {
-            setObservatory(null);
-            setBuildingType(0 as unknown as BuildingType.value);
+        if (segment === 'temperature') {
+            if (isSampleFile) {
+                setObservatory(null);
+            }
+            setBuildingType(
+                (isSampleFile ? 0 : 1) as unknown as BuildingType.value
+            );
         }
     }, [segment, isSampleFile]);
 

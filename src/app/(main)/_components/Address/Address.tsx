@@ -26,26 +26,17 @@ export default function Address({
         <div className={styles.container}>
             <div className={styles.observatory}>
                 <SelectedFile
+                    htmlFor="address"
                     icon={LocationIcon}
                     filename={observatory}
                     handleDelete={handleDelete}
-                    placeholder="측정 위치를 선택해주세요."
+                    onClick={() => {
+                        setOpen(true);
+                    }}
+                    placeholder="주소로 가장 가까운 관측소 찾기"
+                    disabled={disabled}
                 />
             </div>
-            <Button
-                styleType="outlined"
-                style={{
-                    height: '40px',
-                    fontSize: '14px',
-                    gap: '6px',
-                }}
-                disabled={disabled}
-                onClick={() => {
-                    setOpen(true);
-                }}
-            >
-                주소로 가장 가까운 관측소 찾기
-            </Button>
             {open && (
                 <div id="modal" className={styles.modal}>
                     <div className={styles.wrapper}>

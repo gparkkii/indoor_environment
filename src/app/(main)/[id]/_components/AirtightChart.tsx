@@ -7,7 +7,7 @@ import styles from './Chart.module.css';
 import { YEAR_OPTION } from '@/constants/option';
 import { useWindowSize } from '@/hooks/useWindowSize';
 import { breakpoints } from '@/constants/breakpoints';
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 
 const L_SERIES = [
     {
@@ -35,7 +35,7 @@ const L_SERIES = [
             },
         ],
     },
-]
+];
 const N_SERIES = [
     {
         name: 'box',
@@ -70,126 +70,124 @@ interface AirtightChartProps {
     atype?: number;
 }
 
-export default function AirtightChart({ avg, year, atype }: AirtightChartProps) {
-    const { width } = useWindowSize()
+export default function AirtightChart({
+    avg,
+    year,
+    atype,
+}: AirtightChartProps) {
+    const { width } = useWindowSize();
     // const OUTLIERS = useMemo(() => ({ name: 'outliers', type: 'scatter', data: [{x: Number(year), y: Number(avg)}]}), [year, avg])
 
-    const getChartOptions = useCallback(
-      (): ApexCharts.ApexOptions => {
+    const getChartOptions = useCallback((): ApexCharts.ApexOptions => {
         const xl = width && Number(width) > breakpoints.values.xl;
         const lg = width && Number(width) > breakpoints.values.lg;
-        return (
-            {
-                chart: {
-                    toolbar: {
-                        show: false,
-                        autoSelected: undefined,
+        return {
+            chart: {
+                toolbar: {
+                    show: false,
+                    autoSelected: undefined,
+                },
+                zoom: {
+                    enabled: false,
+                },
+            },
+            legend: {
+                show: false,
+            },
+            xaxis: {
+                type: 'category',
+                tooltip: {
+                    enabled: false,
+                },
+                crosshairs: {
+                    show: true,
+                },
+                labels: {
+                    formatter: (val: string) => {
+                        const label = YEAR_OPTION.find(
+                            ({ value }) => value === Number(val)
+                        )?.label.toString();
+                        return label ?? '---';
                     },
-                    zoom: {
-                        enabled: false
+                    style: {
+                        colors: '#64748b',
                     },
                 },
-                legend: {
-                    show: false
-                },
-                xaxis: {
-                    type: 'category',
-                    tooltip: {
-                        enabled: false,
+            },
+            yaxis: {
+                labels: {
+                    style: {
+                        colors: '#64748b',
                     },
-                    crosshairs: {
-                        show: true,
-                    },
-                    labels: {
-                        formatter: (val: string) => {
-                            const label = YEAR_OPTION.find(
-                                ({ value }) => value === Number(val)
-                            )?.label.toString();
-                            return label ?? '---';
-                        },
-                        style: {
-                            colors: '#64748b',
-                        },
-                    },
-                },
-                yaxis: {
-                    labels: {
-                        style: {
-                            colors: '#64748b',
-                        },
-                    },
-                    tooltip: {
-                        enabled: false,
-                    },
-                },
-                plotOptions: {
-                    bar: {
-                        columnWidth: xl ? 80 : lg ? 64 : 20,
-                    }
-                },
-                annotations: {
-                    points: [
-                        {
-                            x: year,
-                            y: avg,
-                            marker: {
-                                size: 3,
-                                strokeWidth: 1.5,
-                                strokeColor: '#000',
-                                fillColor: '#fff',
-                            },
-                            label: {
-                                text: avg?.toFixed(1),
-                                orientation: 'horizontal',
-                                borderColor: "#000",
-                                borderWidth: 1,
-                                borderRadius: 3,
-                                style: {
-                                    color: "#fff",
-                                    fontSize: '11px',
-                                    fontWeight: 600,
-                                    background: "#ff5f77",
-                                },
-                            }
-                        }
-                    ],
-                    xaxis: [
-                        { 
-                            x: year,
-                            borderWidth: xl ? 100 : lg ? 84 : 40,
-                            strokeDashArray: 0,
-                            borderColor: "#ff6f851a",
-                        }
-                    ]
                 },
                 tooltip: {
                     enabled: false,
-                    shared: false,
-                    intersect: true,
-                    custom: function ({ w, dataPointIndex }) {
-                        const series =
-                            w.config.series[0].data[dataPointIndex];
-                        return (
-                            '<div class="chart_tooltip">' +
-                            '<span>' +
-                            'min: ' +
-                            series.y[0] +
-                            '<br/>' +
-                            'avg: ' +
-                            series.y[2] +
-                            '<br/>' +
-                            'max: ' +
-                            series.y[4] +
-                            '</span>' +
-                            '</div>'
-                        );
-                    },
                 },
-            }
-      )},
-      [width, avg, year, atype],
-    )
-    
+            },
+            plotOptions: {
+                bar: {
+                    columnWidth: xl ? 80 : lg ? 64 : 20,
+                },
+            },
+            annotations: {
+                points: [
+                    {
+                        x: year,
+                        y: avg,
+                        marker: {
+                            size: 3,
+                            strokeWidth: 1.5,
+                            strokeColor: '#000',
+                            fillColor: '#fff',
+                        },
+                        label: {
+                            text: avg?.toFixed(1),
+                            orientation: 'horizontal',
+                            borderColor: '#000',
+                            borderWidth: 1,
+                            borderRadius: 3,
+                            style: {
+                                color: '#fff',
+                                fontSize: '11px',
+                                fontWeight: 600,
+                                background: '#ff5f77',
+                            },
+                        },
+                    },
+                ],
+                xaxis: [
+                    {
+                        x: year,
+                        borderWidth: xl ? 100 : lg ? 84 : 40,
+                        strokeDashArray: 0,
+                        borderColor: '#ff6f851a',
+                    },
+                ],
+            },
+            tooltip: {
+                enabled: false,
+                shared: false,
+                intersect: true,
+                custom: function ({ w, dataPointIndex }) {
+                    const series = w.config.series[0].data[dataPointIndex];
+                    return (
+                        '<div class="chart_tooltip">' +
+                        '<span>' +
+                        'min: ' +
+                        series.y[0] +
+                        '<br/>' +
+                        'avg: ' +
+                        series.y[2] +
+                        '<br/>' +
+                        'max: ' +
+                        series.y[4] +
+                        '</span>' +
+                        '</div>'
+                    );
+                },
+            },
+        };
+    }, [width, avg, year, atype]);
 
     return (
         <div className={styles.container}>
@@ -201,7 +199,7 @@ export default function AirtightChart({ avg, year, atype }: AirtightChartProps) 
                     type="boxPlot"
                     series={atype === 1 ? N_SERIES : L_SERIES}
                     options={getChartOptions()}
-                    height='80%'
+                    height="80%"
                 />
             </div>
         </div>

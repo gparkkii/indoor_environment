@@ -3,10 +3,10 @@
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-start;
-    min-width: 64px;
-    max-width: 260px;
+    min-width: 256px;
+    max-width: 256px;
     height: 100vh;
-    padding: 24px 0px;
+    padding: 20px 0px;
     background-color: var(--color-dark);
     overflow: hidden;
     transition: width 0.25s ease-in-out;
@@ -18,7 +18,7 @@
     padding: 0px 20px;
     font-size: 22px;
     font-weight: 700;
-    color: #FFF;
+    color: #fff;
 }
 
 .nav {
@@ -33,7 +33,7 @@
 .list {
     display: flex;
     width: 100%;
-    height: 56px;
+    height: 60px;
     font-size: 15px;
 }
 
@@ -51,11 +51,11 @@
 }
 
 .list path {
-    fill:  var(--color-nav-hover);
+    fill: var(--color-nav-hover);
 }
 
 .list:not(.active):hover path {
-    fill:  var(--color-white);
+    fill: var(--color-white);
 }
 
 .list:not(.active):hover > a {
@@ -65,7 +65,6 @@
 
 .active {
     background-color: var(--color-active);
-    box-shadow: 3px 0px 0px 0px #E5E7EB inset
 }
 
 .active > a {
@@ -73,5 +72,5 @@
 }
 
 .active > a path {
-    fill:  var(--color-white);
+    fill: var(--color-white);
 }

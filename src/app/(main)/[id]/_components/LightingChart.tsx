@@ -61,7 +61,7 @@ export default function LightingChart() {
     return (
         <div className={styles.container}>
             <div className={styles.chartbox}>
-                <label>
+                <label style={{ marginTop: 40 }}>
                     준공연도별 조명밀도 범위 (단위: W/m<sup>2</sup>)
                 </label>
                 <table className={styles.table}>
@@ -109,11 +109,13 @@ export default function LightingChart() {
                     </tbody>
                 </table>
                 <div className={styles.caption}>
-                * 주거용 건물 조명기기개수 출처: 국가에너지통계정보시스템,’가구에너지패널조사‘,2021
-                <br/>
-                * 교육사회용, 상업용 건물 조명기기 개수 출처: 국가에너지통계정보시스템, ‘2020년 에너지총조사‘,2022
-                <br/>
-                * 조명소비전력 출처: 에너지관리공단,＇조명기기 이용현황 조사 및 보급기준 연구결과 보고서‘,2014
+                    * 주거용 건물 조명기기개수 출처:
+                    국가에너지통계정보시스템,’가구에너지패널조사‘,2021
+                    <br />
+                    * 교육사회용, 상업용 건물 조명기기 개수 출처:
+                    국가에너지통계정보시스템, ‘2020년 에너지총조사‘,2022
+                    <br />* 조명소비전력 출처: 에너지관리공단,＇조명기기
+                    이용현황 조사 및 보급기준 연구결과 보고서‘,2014
                 </div>
             </div>
         </div>

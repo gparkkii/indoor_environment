@@ -1,7 +1,7 @@
 .filebox {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
 }
 
 .filebox input[type='file'] {
@@ -20,12 +20,11 @@
     gap: 10px;
 }
 
-.button-box > label,
 .button-box > button {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 50%;
+    width: 100%;
     height: 38px;
     color: #fff;
     box-shadow: rgba(120, 120, 120, 0.05) 0px 2px 4px;
@@ -34,12 +33,6 @@
     cursor: pointer;
 }
 
-.button-box > label {
-    background-color: var(--color-secondary);
-}
-.button-box > label:hover {
-    background-color: var(--color-secondary-dark);
-}
 .button-box > button {
     background-color: var(--bluegray-400);
 }

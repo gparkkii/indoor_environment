@@ -75,13 +75,15 @@ export default function DetailPage({
                             &nbsp;&nbsp;입니다.
                         </h3>
                         {MENU[id].href === 'temperature' && (
-                            <div className={styles.tempGraphBox}>
-                                <TempGraph
-                                    coordinate_1={[hTemp, hTempIn]}
-                                    coordinate_2={[cTemp, cTempIn]}
-                                />
-                                <div style={{ height: 20 }} />
-                                <HumidityGraph />
+                            <div className={styles['graph-container']}>
+                                <div className={styles.tempGraphBox}>
+                                    <TempGraph
+                                        coordinate_1={[hTemp, hTempIn]}
+                                        coordinate_2={[cTemp, cTempIn]}
+                                    />
+                                    <div style={{ height: 20 }} />
+                                    <HumidityGraph />
+                                </div>
                             </div>
                         )}
                         {MENU[id].href === 'lighting' && <LightingChart />}

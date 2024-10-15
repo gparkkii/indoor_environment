@@ -35,13 +35,13 @@ export default function UploadFile({
     return (
         <div className={styles.filebox}>
             <SelectedFile
+                htmlFor="upload-file"
                 filename={file?.name}
                 icon={CsvIcon}
                 handleDelete={handleDelete}
                 placeholder="측정 데이터를 선택해주세요."
             />
             <div className={styles['button-box']}>
-                <label htmlFor="upload-file">파일 불러오기</label>
                 <button type="button" onClick={handleSample}>
                     샘플 데이터
                 </button>
