@@ -186,7 +186,7 @@ const HumidityGraph = () => {
         },
         stroke: {
             curve: 'straight',
-            width: 4,
+            width: 6,
         },
         xaxis: {
             title: {
@@ -238,6 +238,10 @@ const HumidityGraph = () => {
             itemMargin: { horizontal: 12 },
             position: 'bottom',
         },
+        grid: {
+            borderColor: '#dfe1e5',
+            strokeDashArray: 5,
+        },
         title: {
             text: 'ISO 13788_Humidity Class',
             style: {
@@ -255,7 +259,7 @@ const HumidityGraph = () => {
             series={series}
             options={options}
             type="line"
-            height={500}
+            height={560}
         />
     );
 };

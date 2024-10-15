@@ -61,7 +61,7 @@ export default function LightingChart() {
     return (
         <div className={styles.container}>
             <div className={styles.chartbox}>
-                <label style={{ marginTop: 40 }}>
+                <label style={{ marginTop: 20 }}>
                     준공연도별 조명밀도 범위 (단위: W/m<sup>2</sup>)
                 </label>
                 <table className={styles.table}>

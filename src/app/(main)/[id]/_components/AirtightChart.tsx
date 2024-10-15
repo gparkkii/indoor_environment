@@ -164,6 +164,10 @@ export default function AirtightChart({
                     },
                 ],
             },
+            grid: {
+                borderColor: '#dfe1e5',
+                strokeDashArray: 5,
+            },
             tooltip: {
                 enabled: false,
                 shared: false,
@@ -199,7 +203,7 @@ export default function AirtightChart({
                     type="boxPlot"
                     series={atype === 1 ? N_SERIES : L_SERIES}
                     options={getChartOptions()}
-                    height="80%"
+                    height="85%"
                 />
             </div>
         </div>

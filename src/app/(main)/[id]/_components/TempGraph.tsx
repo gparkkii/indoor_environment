@@ -64,7 +64,7 @@ const TempGraph = ({ coordinate_1, coordinate_2 }: TempGraphProps) => {
         colors: ['#ff6f85'],
         stroke: {
             curve: 'straight',
-            width: 4,
+            width: 6,
         },
         yaxis: {
             labels: {
@@ -91,6 +91,10 @@ const TempGraph = ({ coordinate_1, coordinate_2 }: TempGraphProps) => {
                 },
                 formatter: (value) => (parseInt(value) % 5 === 0 ? value : ''),
             },
+        },
+        grid: {
+            borderColor: '#dfe1e5',
+            strokeDashArray: 5,
         },
         title: {
             text: 'Indoor Living Temperature Chart',

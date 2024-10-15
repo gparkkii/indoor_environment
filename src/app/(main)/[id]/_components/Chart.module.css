@@ -13,14 +13,14 @@
     display: flex;
     flex-direction: column;
     flex: 1;
-    width: 85%;
+    width: 95%;
     height: 100%;
 }
 
 .chartbox > label {
-    font-size: 16px;
+    font-size: 17px;
     font-weight: 500;
-    color: var(--bluegray-600);
+    color: var(--bluegray-500);
     padding-bottom: 20px;
     text-align: center;
 }
@@ -30,8 +30,8 @@
 }
 
 .caption {
-    font-size: 13px;
-    line-height: 150%;
+    font-size: 12px;
+    line-height: 160%;
     font-weight: 400;
     color: var(--bluegray-400);
     padding: 20px 0px;
@@ -67,7 +67,7 @@
 .table thead > tr:not(:first-child) > th:not(:last-child) {
     border-right: 1px solid var(--bluegray-350);
 }
-.table thead > tr:last-child > th{
+.table thead > tr:last-child > th {
     border-bottom: 1px solid var(--bluegray-350);
 }
 .table tbody > tr > th {
@@ -76,8 +76,8 @@
 .table tbody > tr > th {
     background-color: var(--bluegray-50);
 }
-.table tbody td, 
-.table tbody th{
+.table tbody td,
+.table tbody th {
     height: 56px;
     padding: 10px 12px;
     font-size: 15px;
@@ -90,8 +90,8 @@
 .table tbody td {
     color: var(--bluegray-600);
 }
-.table tr:last-child > td ,
-.table tr:last-child > th{
+.table tr:last-child > td,
+.table tr:last-child > th {
     border-bottom: 0px;
 }
 .table td:not(:last-child) {
@@ -100,7 +100,7 @@
 
 .highlight {
     font-weight: 600 !important;
-    color: #40A0FC !important;
+    color: #40a0fc !important;
     background-color: rgba(0, 162, 255, 0.15);
-    border-bottom: 2px solid #40A0FC !important;
+    border-bottom: 2px solid #40a0fc !important;
 }
