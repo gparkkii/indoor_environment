@@ -13,7 +13,7 @@ export const getWthrDataList = async ({
     endDt: string;
     startHh: string;
     endHh: string;
-    stnIds: string;
+    stnIds?: string;
 }): Promise<DataRow[]> => {
     try {
         const response = await fetch(

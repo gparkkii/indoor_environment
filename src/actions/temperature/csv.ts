@@ -93,7 +93,8 @@ const padStringFormat = (value: number) => {
 
 export const processFile = async (
     file: File,
-    setProcess: React.Dispatch<React.SetStateAction<string>>
+    setProcess: React.Dispatch<React.SetStateAction<string>>,
+    stnId: string | null
 ) => {
     try {
         const parsedData = await handleFileUpload(file);
@@ -105,7 +106,7 @@ export const processFile = async (
         console.log('측정 데이터 이동평균 :', { resampledData });
 
         if (mResult === 'success') {
-            const stnIds = resampledData[0].userStnId.toString(); // stnIds
+            const stnIds = resampledData[0]?.userStnId ?? stnId; // stnIds
             const firstDate = resampledData[0].tm; // 최초 일자
             const lastDate = resampledData[resampledData.length - 1].tm; // 마지막 일자
 
@@ -122,13 +123,17 @@ export const processFile = async (
             const endHh = `${padStringFormat(lastDate.getHours())}`;
 
             console.log('기상청 데이터 불러오는 중...');
+            if (!stnIds) {
+                setProcess('관측소 데이터를 찾을 수 없습니다.');
+                return;
+            }
             setProcess('기상청 데이터 불러오는 중...');
             const wthrData = await getWthrDataList({
                 startDt,
                 startHh,
                 endDt,
                 endHh,
-                stnIds,
+                stnIds: stnIds.toString(),
             });
             console.log('기상청 데이터 :', { wthrData });
 

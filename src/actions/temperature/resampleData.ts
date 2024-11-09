@@ -34,22 +34,35 @@ const checkHourlyInterval = (data: ParsedDataRow[]) => {
 
 // 시간 단위로 리샘플링 (평균 값으로 계산)
 const resampleHourly = (data: ParsedDataRow[]) => {
-    const hourlyData: { [key: string]: ParsedDataRow } = {};
+    const hourlyData: {
+        [key: string]: { tempSum: number; humiSum: number; count: number };
+    } = {};
 
     data.forEach((entry) => {
-        const hourKey = new Date(entry.tm).toISOString().slice(0, 13); // 시간 단위로 키를 만듬
+        const hourKey = new Date(entry.tm).toISOString().slice(0, 13); // Get hour as key
         if (!hourlyData[hourKey]) {
-            hourlyData[hourKey] = { ...entry };
+            hourlyData[hourKey] = {
+                tempSum: entry.temp,
+                humiSum: entry.humi,
+                count: 1,
+            };
         } else {
-            // 중복된 시간이 있을 경우 평균값을 계산
-            hourlyData[hourKey].temp =
-                (hourlyData[hourKey].temp + entry.temp) / 2;
-            hourlyData[hourKey].humi =
-                (hourlyData[hourKey].humi + entry.humi) / 2;
+            hourlyData[hourKey].tempSum += entry.temp;
+            hourlyData[hourKey].humiSum += entry.humi;
+            hourlyData[hourKey].count += 1;
         }
     });
-
-    return Object.values(hourlyData);
+    return Object.keys(hourlyData).map((hourKey) => ({
+        tm: new Date(`${hourKey}:00:00`),
+        temp:
+            Math.round(
+                (hourlyData[hourKey].tempSum / hourlyData[hourKey].count) * 10
+            ) / 10,
+        humi:
+            Math.round(
+                (hourlyData[hourKey].humiSum / hourlyData[hourKey].count) * 10
+            ) / 10,
+    }));
 };
 
 // 24시간 이동평균 계산 함수
@@ -62,13 +75,10 @@ const calculateMovingAverage = (
     const wMovingAverageData: WProcessedDataRow[] = [];
 
     data.forEach((entry, index) => {
-        const startIndex = Math.max(0, index - hours + 1); // 24시간 이전 데이터까지 포함
-        const rangeData = data.slice(startIndex, index + 1); // 24시간 범위의 데이터
+        const rangeData = data.slice(Math.max(0, index - hours + 1), index + 1); // 24-hour range
 
-        // temp와 humi의 평균값 계산
         const tempSum = rangeData.reduce((sum, item) => sum + item.temp, 0);
         const humiSum = rangeData.reduce((sum, item) => sum + item.humi, 0);
-
         const tempAvg = tempSum / rangeData.length;
         const humiAvg = humiSum / rangeData.length;
 
@@ -82,8 +92,8 @@ const calculateMovingAverage = (
         } else {
             wMovingAverageData.push({
                 ...entry,
-                wTemp: tempAvg,
-                wHumi: humiAvg,
+                wTemp: Math.round(tempAvg * 10) / 10,
+                wHumi: Math.round(humiAvg * 10) / 10,
                 userStnId: entry.stnId,
             });
         }

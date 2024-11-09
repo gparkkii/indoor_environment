@@ -6,7 +6,7 @@ export interface DataRow {
 }
 
 export interface ParsedDataRow {
-    stnId: number;
+    stnId?: number;
     tm: Date;
     temp: number;
     humi: number;
@@ -15,13 +15,13 @@ export interface ParsedDataRow {
 export interface MProcessedDataRow extends ParsedDataRow {
     mTemp: number;
     mHumi: number;
-    userStnId: number;
+    userStnId?: number;
 }
 
 export interface WProcessedDataRow extends ParsedDataRow {
     wTemp: number;
     wHumi: number;
-    userStnId: number;
+    userStnId?: number;
 }
 
 export interface processResult {

@@ -153,6 +153,11 @@ export default function Drawer() {
         }
     }, [segment, isSampleFile]);
 
+    function extractNumber(input: string): number | null {
+        const match = input.match(/\d+/);
+        return match ? parseInt(match[0], 10) : null;
+    }
+
     const handleSubmit = useCallback(
         async (e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault();
@@ -160,7 +165,10 @@ export default function Drawer() {
                 if (file) {
                     setOpen(true);
                     setLoading(true);
-                    const result = await processFile(file, setProcess);
+                    const geocoder = observatory
+                        ? extractNumber(observatory)
+                        : null;
+                    const result = await processFile(file, setProcess, geocoder);
                     if (result !== null) {
                         setOpen(false);
                         let url = `/${segment}?result=${encodeURI(JSON.stringify(result))}`;
@@ -192,7 +200,15 @@ export default function Drawer() {
                 }
             }
         },
-        [year, buildingType, airtight, aBuildingType, segment, file]
+        [
+            year,
+            buildingType,
+            airtight,
+            aBuildingType,
+            segment,
+            file,
+            observatory,
+        ]
     );
 
     return (
