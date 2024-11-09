@@ -45,5 +45,5 @@ export const calculateVaporPressure = (
     );
     const pdiff = pi.map((p, i) => Math.round((p - po[i]) * 100) / 100);
 
-    return { pi, po, pdiff };
+    return { pi, po, p_sat_i, p_sat_o, pdiff };
 };

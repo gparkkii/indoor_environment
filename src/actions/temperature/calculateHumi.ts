@@ -1,142 +1,202 @@
-interface HumiCalculationResult {
-    hHumi: number;
-    hHumiRSquared: number;
-    hPDiff: number;
-    cHumi: number;
-    cHumiRSquared: number;
-}
+import {
+    mean,
+    linearRegression,
+    linearRegressionLine,
+} from 'simple-statistics';
 
-// Linear regression function to calculate slope and intercept
-function linearFit(
-    x: number[],
-    y: number[]
-): { slope: number; intercept: number } {
-    const n = x.length;
-    const xSum = x.reduce((a, b) => a + b, 0);
-    const ySum = y.reduce((a, b) => a + b, 0);
-    const xySum = x.map((xi, idx) => xi * y[idx]).reduce((a, b) => a + b, 0);
-    const xSqSum = x.map((xi) => xi ** 2).reduce((a, b) => a + b, 0);
+type InputData = {
+    wTemp: number[];
+    mTemp: number[];
+    p_diff: number[];
+};
 
-    const slope = (n * xySum - xSum * ySum) / (n * xSqSum - xSum ** 2);
-    const intercept = (ySum - slope * xSum) / n;
+type Result = {
+    hTemp?: number;
+    hTempRSquared?: number;
+    hTempIn?: number;
+    cTemp?: number;
+    cTempRSquared?: number;
+    cTempIn?: number;
+    hHumi?: number;
+    hHumiRSquared?: number;
+    hDiff?: number;
+    cHumi?: number;
+    cHumiRSquared?: number;
+    cPDiff?: number;
+    r_squared_column: string;
+};
 
-    return { slope, intercept };
-}
-
-// Function to calculate R-squared
-function calculateRSquared(
-    x: number[],
-    y: number[],
-    slope: number,
-    intercept: number
-): number {
-    const yMean = y.reduce((a, b) => a + b, 0) / y.length;
-    const ssTot = y.reduce((a, yi) => a + (yi - yMean) ** 2, 0);
-    const ssRes = y.reduce(
-        (a, yi, idx) => a + (yi - (slope * x[idx] + intercept)) ** 2,
+// R-squared 계산 함수
+function calculateRSquared(actual: number[], predicted: number[]): number {
+    const meanActual = mean(actual);
+    const ssTotal = actual.reduce(
+        (acc, val) => acc + Math.pow(val - meanActual, 2),
         0
     );
-    return 1 - ssRes / ssTot;
+    const ssResidual = actual.reduce(
+        (acc, val, i) => acc + Math.pow(val - predicted[i], 2),
+        0
+    );
+    return 1 - ssResidual / ssTotal;
 }
 
-// Find the closest R-squared to the target value
-function findClosestLimit(
-    limits: number[],
-    wTemp: number[],
-    pDiff: number[],
-    targetRSquared: number,
-    minTemp: number,
-    maxTemp: number,
-    ascending: boolean
-) {
+// heating 및 cooling limits 생성 함수
+const calculateLimits = (min: number, max: number, step: number): number[] => {
+    const limits: number[] = [];
+    for (let i = min; i <= max; i += step) {
+        limits.push(parseFloat(i.toFixed(2)));
+    }
+    return limits;
+};
+
+// 목표 R-squared와 가장 가까운 값을 찾는 함수
+const findClosestRSquared = (
+    range: { limit: number; r_squared: number }[],
+    target: number
+) => {
     let closestDifference = Infinity;
     let closestLimit = 0;
     let closestRSquared = 0;
-
-    for (const limit of limits) {
-        const range = wTemp
-            .map((temp, idx) => ({ temp, pDiff: pDiff[idx] }))
-            .filter(({ temp }) =>
-                ascending
-                    ? temp <= limit && temp >= minTemp
-                    : temp >= limit && temp <= maxTemp
-            );
-
-        if (range.length === 0) continue;
-
-        const temps = range.map((r) => r.temp);
-        const diffs = range.map((r) => r.pDiff);
-
-        const { slope, intercept } = linearFit(temps, diffs);
-        const rSquared = calculateRSquared(temps, diffs, slope, intercept);
-
-        const difference = Math.abs(rSquared - targetRSquared);
-
+    range.forEach(({ limit, r_squared }) => {
+        const difference = Math.abs(r_squared - target);
         if (difference < closestDifference) {
             closestDifference = difference;
             closestLimit = limit;
-            closestRSquared = rSquared;
+            closestRSquared = r_squared;
         }
+    });
+    return { closestLimit, closestRSquared };
+};
+
+export const calculateHeatingCoolingLimits = (
+    data: InputData
+): { results_temp: Result[]; results_pdiff: Result[] } => {
+    // 각 배열의 길이가 동일한지 확인
+    const { wTemp, mTemp, p_diff } = data;
+    if (wTemp.length !== mTemp.length || wTemp.length !== p_diff.length) {
+        throw new Error('Input arrays must have the same length.');
     }
 
-    return { closestLimit, closestRSquared };
-}
+    // 데이터를 개별 객체 배열로 변환
+    const combinedData = wTemp.map((temp, index) => ({
+        wTemp: temp,
+        mTemp: mTemp[index],
+        p_diff: p_diff[index],
+    }));
 
-// Main function to calculate hHumi, cHumi, and hPDiff
-export function calculateHumi({
-    wTemp,
-    pdiff,
-    targetRSquared = 0.5,
-}: {
-    wTemp: number[];
-    pdiff: number[];
-    targetRSquared?: number;
-}): HumiCalculationResult {
-    // Heating limits calculation
-    const heatingMax = Math.min(...wTemp);
-    const heatingLimits = Array.from({ length: 200 }, (_, i) =>
-        (heatingMax + i * 0.1).toFixed(2)
-    ).map(Number);
+    // heating_max와 cooling_max 계산
+    const heating_max = Math.min(...wTemp);
+    const cooling_max = Math.max(...wTemp);
 
-    // Cooling limits calculation
-    const coolingMax = Math.max(...wTemp);
-    const coolingLimits = Array.from({ length: 200 }, (_, i) =>
-        (coolingMax - i * 0.1).toFixed(2)
-    ).map(Number);
+    // heating 및 cooling limits 생성
+    const heating_limits = calculateLimits(heating_max, heating_max + 30, 0.1);
+    const cooling_limits = calculateLimits(cooling_max - 30, cooling_max, 0.1);
 
-    // Calculate hHumi
-    const { closestLimit: hHumi, closestRSquared: hHumiRSquared } =
-        findClosestLimit(
-            heatingLimits,
-            wTemp,
-            pdiff,
-            targetRSquared,
-            heatingMax,
-            coolingMax,
-            true
-        );
+    const target_r_squared = 0.5;
+    const results_temp: Result[] = [];
+    const results_pdiff: Result[] = [];
 
-    // Calculate cHumi
-    const { closestLimit: cHumi, closestRSquared: cHumiRSquared } =
-        findClosestLimit(
-            coolingLimits,
-            wTemp,
-            pdiff,
-            targetRSquared,
-            heatingMax,
-            coolingMax,
-            false
-        );
+    const r_squared_columns: ('mTemp' | 'p_diff')[] = ['mTemp', 'p_diff'];
 
-    // Calculate hPDiff (equation에서 hHumi를 대입해서 나온 값)
-    const { slope, intercept } = linearFit(wTemp, pdiff);
-    const hPDiff = slope * hHumi + intercept;
+    r_squared_columns.forEach((r_squared_column) => {
+        const r_squared_rh_range_h: { limit: number; r_squared: number }[] = [];
+        const r_squared_rh_range_c: { limit: number; r_squared: number }[] = [];
 
-    return {
-        hHumi,
-        hHumiRSquared,
-        hPDiff,
-        cHumi,
-        cHumiRSquared,
-    };
-}
+        // heating 결정계수 계산
+        heating_limits.forEach((heating_limit) => {
+            const heating_range = combinedData.filter(
+                (row) => row.wTemp <= heating_limit && row.wTemp >= heating_max
+            );
+            if (heating_range.length > 1) {
+                const x = heating_range.map((row) => row.wTemp);
+                const y = heating_range.map((row) => row[r_squared_column]);
+                const { m, b } = linearRegression(
+                    x.map((xVal, i) => [xVal, y[i]])
+                );
+                const regressionLine = linearRegressionLine({ m, b });
+                const predicted = x.map((xVal) => regressionLine(xVal));
+                const r_squared_h = calculateRSquared(y, predicted);
+                r_squared_rh_range_h.push({
+                    limit: heating_limit,
+                    r_squared: r_squared_h,
+                });
+            }
+        });
+
+        // cooling 결정계수 계산
+        cooling_limits.forEach((cooling_limit) => {
+            const cooling_range = combinedData.filter(
+                (row) => row.wTemp >= cooling_limit && row.wTemp <= cooling_max
+            );
+            if (cooling_range.length > 1) {
+                const x = cooling_range.map((row) => row.wTemp);
+                const y = cooling_range.map((row) => row[r_squared_column]);
+                const { m, b } = linearRegression(
+                    x.map((xVal, i) => [xVal, y[i]])
+                );
+                const regressionLine = linearRegressionLine({ m, b });
+                const predicted = x.map((xVal) => regressionLine(xVal));
+                const r_squared_c = calculateRSquared(y, predicted);
+                r_squared_rh_range_c.push({
+                    limit: cooling_limit,
+                    r_squared: r_squared_c,
+                });
+            }
+        });
+
+        // heating 및 cooling의 목표 R-squared와 가장 가까운 값 찾기
+        if (r_squared_column === 'mTemp') {
+            const { closestLimit: hTemp, closestRSquared: hTempRSquared } =
+                findClosestRSquared(r_squared_rh_range_h, target_r_squared);
+            const { closestLimit: cTemp, closestRSquared: cTempRSquared } =
+                findClosestRSquared(r_squared_rh_range_c, target_r_squared);
+
+            const heatingRangeF = combinedData.filter(
+                (row) => row.wTemp <= hTemp && row.wTemp >= heating_max
+            );
+            const coolingRangeF = combinedData.filter(
+                (row) => row.wTemp >= cTemp && row.wTemp <= cooling_max
+            );
+
+            const hTempIn = mean(heatingRangeF.map((row) => row.mTemp));
+            const cTempIn = mean(coolingRangeF.map((row) => row.mTemp));
+
+            results_temp.push({
+                hTemp,
+                hTempRSquared,
+                hTempIn,
+                cTemp,
+                cTempRSquared,
+                cTempIn,
+                r_squared_column: 'hTemp, cTemp',
+            });
+        } else if (r_squared_column === 'p_diff') {
+            const { closestLimit: hHumi, closestRSquared: hHumiRSquared } =
+                findClosestRSquared(r_squared_rh_range_h, target_r_squared);
+            const { closestLimit: cHumi, closestRSquared: cHumiRSquared } =
+                findClosestRSquared(r_squared_rh_range_c, target_r_squared);
+
+            const heatingRangeP = combinedData.filter(
+                (row) => row.wTemp <= hHumi && row.wTemp >= heating_max
+            );
+            const coolingRangeP = combinedData.filter(
+                (row) => row.wTemp >= cHumi && row.wTemp <= cooling_max
+            );
+
+            const hPDiff = mean(heatingRangeP.map((row) => row.p_diff));
+            const cPDiff = mean(coolingRangeP.map((row) => row.p_diff));
+
+            results_pdiff.push({
+                hHumi,
+                hHumiRSquared,
+                hDiff: hPDiff,
+                cHumi,
+                cHumiRSquared,
+                cPDiff,
+                r_squared_column: 'p_diff',
+            });
+        }
+    });
+
+    return { results_temp, results_pdiff };
+};

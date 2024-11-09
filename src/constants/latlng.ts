@@ -311,12 +311,12 @@ export const LATLNG = [
         latitude: 35.217781,
         longitude: 128.96024,
     },
-    {
-        location: '관악산',
-        id: 116,
-        latitude: 37.44526,
-        longitude: 126.96402,
-    },
+    // {
+    //     location: '관악산',
+    //     id: 116,
+    //     latitude: 37.44526,
+    //     longitude: 126.96402,
+    // },
     {
         location: '서울',
         id: 108,
