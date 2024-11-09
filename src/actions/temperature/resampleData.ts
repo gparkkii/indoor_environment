@@ -75,8 +75,8 @@ const calculateMovingAverage = (
         if (type === 'm') {
             mMovingAverageData.push({
                 ...entry,
-                mTemp: tempAvg,
-                mHumi: humiAvg,
+                mTemp: Math.round(tempAvg * 10) / 10,
+                mHumi: Math.round(humiAvg * 10) / 10,
                 userStnId: entry.stnId,
             });
         } else {

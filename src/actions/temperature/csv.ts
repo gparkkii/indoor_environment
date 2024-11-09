@@ -9,13 +9,26 @@ const parseCSV = (csv: string): DataRow[] => {
     const lines = csv.trim().split('\n');
     const headers = lines[0].split(',').map((header) => header.trim());
 
+    const stnId = headers.findIndex(
+        (header) => header.toLocaleLowerCase() === 'stnid'
+    );
+    const tm = headers.findIndex(
+        (header) => header.toLocaleLowerCase() === 'tm'
+    );
+    const temp = headers.findIndex(
+        (header) => header.toLocaleLowerCase() === 'temp'
+    );
+    const humi = headers.findIndex(
+        (header) => header.toLocaleLowerCase() === 'humi'
+    );
+
     return lines.slice(1).map((line) => {
         const values = line.split(',').map((value) => value.trim());
         const row: DataRow = {
-            stnId: Number(values[0]),
-            tm: values[1],
-            temp: Number(values[2]),
-            humi: Number(values[3]),
+            stnId: Number(values?.[stnId]),
+            tm: values?.[tm],
+            temp: Number(values?.[temp]),
+            humi: Number(values?.[humi]),
         };
         return row;
     });
