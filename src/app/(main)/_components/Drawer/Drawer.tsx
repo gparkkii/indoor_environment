@@ -24,6 +24,7 @@ import Address from '../Address/Address';
 import { getGeocoder } from '@/actions/temperature/address';
 import ProcessModal from '../Modal/ProcessModal';
 import { LATLNG } from '../../../../constants/latlng';
+import { useWeatherData } from '@/contexts/WeatherDataContext';
 
 const InputBox = ({
     label,
@@ -43,6 +44,8 @@ const InputBox = ({
 export default function Drawer() {
     const router = useRouter();
     const segment = useSelectedLayoutSegment() as keyof typeof MENU;
+
+    const { cachedWeatherData, setCachedWeatherData } = useWeatherData();
 
     const searchParams = useSearchParams();
     const yearIndex = searchParams.get('year');
@@ -187,7 +190,9 @@ export default function Drawer() {
                     const result = await processFile(
                         file,
                         setProcess,
-                        geocoder
+                        geocoder,
+                        cachedWeatherData,
+                        setCachedWeatherData
                     );
                     if (result !== null) {
                         setOpen(false);

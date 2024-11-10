@@ -9,6 +9,7 @@ export const getWthrDataList = async ({
     endHh,
     stnIds,
     setProcess,
+    setCachedWeatherData,
 }: {
     startDt: string;
     endDt: string;
@@ -16,6 +17,7 @@ export const getWthrDataList = async ({
     endHh: string;
     stnIds?: string;
     setProcess: (value: React.SetStateAction<string>) => void;
+    setCachedWeatherData: (data: any) => void;
 }): Promise<DataRow[]> => {
     try {
         const response = await fetch(
@@ -50,6 +52,7 @@ export const getWthrDataList = async ({
                     console.log('All Data loaded : ', data.allData);
                     // Handle final data
                     setProcess('All Data loaded');
+                    setCachedWeatherData(data.allData);
                     return data.allData as DataRow[];
                 }
             }

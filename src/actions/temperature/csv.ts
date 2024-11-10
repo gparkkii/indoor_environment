@@ -94,7 +94,9 @@ const padStringFormat = (value: number) => {
 export const processFile = async (
     file: File,
     setProcess: React.Dispatch<React.SetStateAction<string>>,
-    stnId: number | null
+    stnId: number | null,
+    cachedWeatherData: Record<string, any>,
+    setCachedWeatherData: (key: string, data: any) => void
 ) => {
     try {
         const parsedData = await handleFileUpload(file);
@@ -122,20 +124,26 @@ export const processFile = async (
                 `${padStringFormat(lastDate.getDate())}`;
             const endHh = `${padStringFormat(lastDate.getHours())}`;
 
+            const cacheKey = `${stnId}-${startDt}-${endDt}-${startHh}-${endHh}-${file.name}`;
+
             console.log('기상청 데이터 불러오는 중...');
             if (!stnIds) {
                 throw new Error(`관측소 데이터를 찾을 수 없습니다.`);
             }
             setProcess('기상청 데이터 불러오는 중...');
 
-            const wthrData = await getWthrDataList({
-                startDt,
-                startHh,
-                endDt,
-                endHh,
-                stnIds: stnIds.toString(),
-                setProcess,
-            });
+            const wthrData = cachedWeatherData[cacheKey]
+                ? cachedWeatherData[cacheKey]
+                : await getWthrDataList({
+                      startDt,
+                      startHh,
+                      endDt,
+                      endHh,
+                      stnIds: stnIds.toString(),
+                      setProcess,
+                      setCachedWeatherData: (data) =>
+                          setCachedWeatherData(cacheKey, data),
+                  });
             console.log('기상청 데이터 :', { wthrData });
 
             console.log('기상청 데이터 이동평균 구하는 중...');
@@ -182,24 +190,8 @@ export const processFile = async (
                 console.log('hTemp, hTemp 계산중...');
                 setProcess('hTemp, hTemp 계산중...');
 
-                // const {
-                //     cTemp,
-                //     cTempIn,
-                //     cTempRSquared,
-                //     hTemp,
-                //     hTempIn,
-                //     hTempRSquared,
-                // } = calculateTemp(wTemp, mTemp);
-                // console.log('hTemp, hTemp 계산 완료', {
-                //     cTemp,
-                //     cTempIn,
-                //     cTempRSquared,
-                //     hTemp,
-                //     hTempIn,
-                //     hTempRSquared,
-                // });
-
                 console.log('계산 완료', value);
+                setProcess('계산 완료');
                 return value;
             } else {
                 setProcess('기상청 데이터 이동평균을 불러오지 못했습니다..');
