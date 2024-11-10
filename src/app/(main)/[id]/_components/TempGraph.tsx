@@ -98,6 +98,9 @@ const TempGraph = ({ coordinate_1, coordinate_2 }: TempGraphProps) => {
                 },
                 formatter: (value) => (parseInt(value) % 5 === 0 ? value : ''),
             },
+            tooltip: {
+                formatter: (value) => (Number(value) - 1).toFixed(0),
+            },
         },
         grid: {
             borderColor: '#dfe1e5',

@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
+import styles from './Chart.module.css';
 
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 
@@ -255,12 +256,53 @@ const HumidityGraph = () => {
     };
 
     return (
-        <ApexCharts
-            series={series}
-            options={options}
-            type="line"
-            height={560}
-        />
+        <div className={styles.humidity}>
+            <ApexCharts
+                series={series}
+                options={options}
+                type="line"
+                height={560}
+            />
+            <div className={styles['humidity-class']}>
+                <h5>Internal humidity classes</h5>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Class</th>
+                            <th>Building</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Unoccupied buildings, storage of dry goods</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>
+                                Offices, dwellings with normal occupancy and
+                                ventilation
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Buildings with unknown occupancy</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>Sports halls, kitchens and canteens</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>
+                                Special buildings, for example, laundry, brewery
+                                and swimming pool
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     );
 };
 

@@ -23,6 +23,7 @@ import UploadFile from '../UploadFile/UploadFile';
 import Address from '../Address/Address';
 import { getGeocoder } from '@/actions/temperature/address';
 import ProcessModal from '../Modal/ProcessModal';
+import { LATLNG } from '../../../../constants/latlng';
 
 const InputBox = ({
     label,
@@ -47,6 +48,8 @@ export default function Drawer() {
     const yearIndex = searchParams.get('year');
     const typeIndex = searchParams.get('type');
     const atypeIndex = searchParams.get('atype');
+    const btypeIndex = searchParams.get('btype');
+    const geocoderIndex = searchParams.get('geocoder');
     const aText = searchParams.get('a');
 
     // temperature
@@ -92,7 +95,7 @@ export default function Drawer() {
         setBuildingType(type);
         setABuildingType(atype);
         setAirtight(a);
-    }, [segment, yearIndex, typeIndex, atypeIndex, aText]);
+    }, [segment, yearIndex, typeIndex, atypeIndex, btypeIndex, aText]);
 
     useEffect(() => {
         if (
@@ -147,11 +150,22 @@ export default function Drawer() {
             if (isSampleFile) {
                 setObservatory(null);
             }
-            setBuildingType(
-                (isSampleFile ? 0 : 1) as unknown as BuildingType.value
-            );
+            if (geocoderIndex) {
+                setObservatory(
+                    `${LATLNG.find((value) => value.id === Number(geocoderIndex))?.location}(${geocoderIndex})`
+                );
+            }
+            if (btypeIndex) {
+                setBuildingType(
+                    Number(btypeIndex) as unknown as BuildingType.value
+                );
+            } else {
+                setBuildingType(
+                    (isSampleFile ? 0 : 1) as unknown as BuildingType.value
+                );
+            }
         }
-    }, [segment, isSampleFile]);
+    }, [segment, isSampleFile, btypeIndex]);
 
     function extractNumber(input: string): number | null {
         const match = input.match(/\d+/);
