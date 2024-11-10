@@ -23,6 +23,7 @@ export const getWthrDataList = async ({
         if (!response.ok) {
             throw new Error(`Error fetching data: ${response.statusText}`);
         }
+        console.log(response);
 
         const data: DataRow[] = await response.json();
         return data;

@@ -191,6 +191,7 @@ export default function Drawer() {
                     );
                     if (result !== null) {
                         setOpen(false);
+                        setProcess('');
                         let url = `/${segment}?result=${encodeURIComponent(JSON.stringify(result))}`;
                         if (buildingType) {
                             url += `&btype=${buildingType}`;
@@ -352,6 +353,7 @@ export default function Drawer() {
                 loading={loading}
                 onClose={() => {
                     setOpen(false);
+                    setProcess('');
                 }}
             />
         </div>
