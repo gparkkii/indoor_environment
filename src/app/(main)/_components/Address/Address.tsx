@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import DaumPostcode from 'react-daum-postcode';
-import Button from '../Button/Button';
 import styles from './Address.module.css';
 import CloseIcon from '@/assets/icons/cancel.svg';
 import LocationIcon from '@/assets/icons/location.svg';

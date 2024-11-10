@@ -80,7 +80,7 @@ export default function DetailPage({
                                         <span>&nbsp;ºC</span>
                                     </span>
                                     <br />
-                                    <span>습도 등급은&nbsp;</span>
+                                    <span>습도 등급은&nbsp;&nbsp;</span>
                                     <span className={styles.emphasize}>
                                         <strong>
                                             Class {getHumidityClass(hPDiff)}

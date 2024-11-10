@@ -28,7 +28,12 @@ export default function SelectedFile({
         <>
             {filename ? (
                 <div className={styles['file-row']}>
-                    <div className={styles.file}>
+                    <div
+                        className={styles.file}
+                        onClick={() => {
+                            onClick?.();
+                        }}
+                    >
                         <Image src={icon} alt="csv" width={22} height={22} />
                         <p>{filename}</p>
                     </div>
