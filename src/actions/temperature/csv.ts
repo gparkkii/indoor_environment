@@ -199,6 +199,7 @@ export const processFile = async (
                 // });
 
                 console.log('계산 완료', value);
+                setProcess('');
                 return value;
             } else {
                 setProcess('기상청 데이터 이동평균을 불러오지 못했습니다..');

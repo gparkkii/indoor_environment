@@ -98,6 +98,30 @@ export default function Drawer() {
     }, [segment, yearIndex, typeIndex, atypeIndex, btypeIndex, aText]);
 
     useEffect(() => {
+        if (segment === 'temperature') {
+            if (isSampleFile) {
+                setObservatory(null);
+            }
+            if (geocoderIndex) {
+                setObservatory(
+                    `${LATLNG.find((value) => value.id === Number(geocoderIndex))?.location}(${geocoderIndex})`
+                );
+            }
+            if (btypeIndex) {
+                setBuildingType(
+                    Number(btypeIndex) as unknown as BuildingType.value
+                );
+            } else {
+                setBuildingType(
+                    (isSampleFile ? 0 : 1) as unknown as BuildingType.value
+                );
+            }
+        } else {
+            setObservatory(null);
+        }
+    }, [segment, isSampleFile, btypeIndex]);
+
+    useEffect(() => {
         if (
             segment === 'airtight' &&
             aBuildingType === 2 &&
@@ -144,28 +168,6 @@ export default function Drawer() {
     const deleteAddress = () => {
         setObservatory(null);
     };
-
-    useEffect(() => {
-        if (segment === 'temperature') {
-            if (isSampleFile) {
-                setObservatory(null);
-            }
-            if (geocoderIndex) {
-                setObservatory(
-                    `${LATLNG.find((value) => value.id === Number(geocoderIndex))?.location}(${geocoderIndex})`
-                );
-            }
-            if (btypeIndex) {
-                setBuildingType(
-                    Number(btypeIndex) as unknown as BuildingType.value
-                );
-            } else {
-                setBuildingType(
-                    (isSampleFile ? 0 : 1) as unknown as BuildingType.value
-                );
-            }
-        }
-    }, [segment, isSampleFile, btypeIndex]);
 
     function extractNumber(input: string): number | null {
         const match = input.match(/\d+/);
