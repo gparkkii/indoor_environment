@@ -19,8 +19,8 @@ const linearFunction = (
 };
 
 interface TempGraphProps {
-    coordinate_1: [number, number];
-    coordinate_2: [number, number];
+    coordinate_1: number[];
+    coordinate_2: number[];
 }
 
 const TempGraph = ({ coordinate_1, coordinate_2 }: TempGraphProps) => {
@@ -28,21 +28,27 @@ const TempGraph = ({ coordinate_1, coordinate_2 }: TempGraphProps) => {
 
     useEffect(() => {
         // x 축 범위를 0에서 30까지 설정
-        const x_values = Array.from({ length: 31 }, (_, i) => i);
+        const xValues = Array.from({ length: 31 }, (_, i) => i); // 0 ~ 30까지 x 값
 
-        // t_i_ISO 값을 계산
-        const t_i_ISO = x_values.map((x) => {
-            if (x <= coordinate_1[0]) {
-                return coordinate_1[1];
-            } else if (x >= coordinate_2[0]) {
-                return coordinate_2[1];
+        // 결과를 저장할 배열
+        const t_i_ISO: number[] = [];
+
+        // 각 x 값에 대해 y 값 계산 및 추가
+        xValues.forEach((i) => {
+            if (i <= coordinate_1[0]) {
+                t_i_ISO.push(coordinate_1[1]);
+            } else if (i >= coordinate_2[0]) {
+                t_i_ISO.push(coordinate_2[1]);
             } else {
-                return linearFunction(
-                    coordinate_1[0],
-                    coordinate_1[1],
-                    coordinate_2[0],
-                    coordinate_2[1],
-                    x
+                // 범위 내의 경우 linearFunction 호출
+                t_i_ISO.push(
+                    linearFunction(
+                        coordinate_1[0],
+                        coordinate_1[1],
+                        coordinate_2[0],
+                        coordinate_2[1],
+                        i
+                    )
                 );
             }
         });
@@ -71,6 +77,7 @@ const TempGraph = ({ coordinate_1, coordinate_2 }: TempGraphProps) => {
                 style: {
                     colors: '#94a3b8',
                 },
+                formatter: (value) => value.toFixed(1),
             },
             tickAmount: 6,
         },

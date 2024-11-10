@@ -19,12 +19,15 @@ type Result = {
     cTempIn?: number;
     hHumi?: number;
     hHumiRSquared?: number;
-    hDiff?: number;
+    hPDiff?: number;
     cHumi?: number;
     cHumiRSquared?: number;
     cPDiff?: number;
-    r_squared_column: string;
 };
+
+function getRound(value: number) {
+    return parseFloat(value.toFixed(1));
+}
 
 // R-squared 계산 함수
 function calculateRSquared(actual: number[], predicted: number[]): number {
@@ -68,9 +71,7 @@ const findClosestRSquared = (
     return { closestLimit, closestRSquared };
 };
 
-export const calculateHeatingCoolingLimits = (
-    data: InputData
-): { results_temp: Result[]; results_pdiff: Result[] } => {
+export const calculateHeatingCoolingLimits = (data: InputData): Result => {
     // 각 배열의 길이가 동일한지 확인
     const { wTemp, mTemp, p_diff } = data;
     if (wTemp.length !== mTemp.length || wTemp.length !== p_diff.length) {
@@ -162,13 +163,12 @@ export const calculateHeatingCoolingLimits = (
             const cTempIn = mean(coolingRangeF.map((row) => row.mTemp));
 
             results_temp.push({
-                hTemp,
-                hTempRSquared,
-                hTempIn,
-                cTemp,
-                cTempRSquared,
-                cTempIn,
-                r_squared_column: 'hTemp, cTemp',
+                hTemp: hTemp,
+                hTempRSquared: hTempRSquared,
+                hTempIn: hTempIn,
+                cTemp: cTemp,
+                cTempRSquared: cTempRSquared,
+                cTempIn: cTempIn,
             });
         } else if (r_squared_column === 'p_diff') {
             const { closestLimit: hHumi, closestRSquared: hHumiRSquared } =
@@ -187,16 +187,15 @@ export const calculateHeatingCoolingLimits = (
             const cPDiff = mean(coolingRangeP.map((row) => row.p_diff));
 
             results_pdiff.push({
-                hHumi,
-                hHumiRSquared,
-                hDiff: hPDiff,
-                cHumi,
-                cHumiRSquared,
-                cPDiff,
-                r_squared_column: 'p_diff',
+                hHumi: hHumi,
+                hHumiRSquared: hHumiRSquared,
+                hPDiff: hPDiff,
+                cHumi: cHumi,
+                cHumiRSquared: cHumiRSquared,
+                cPDiff: cPDiff,
             });
         }
     });
 
-    return { results_temp, results_pdiff };
+    return { ...results_temp[0], ...results_pdiff[0] };
 };

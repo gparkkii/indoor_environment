@@ -1,10 +1,9 @@
 import { SAMPLE_WTHR_DATA } from '../../constants/sample';
 import { DataRow, MProcessedDataRow, WProcessedDataRow } from './@types';
-import { calculateHeatingCoolingLimits } from './calculateHumi';
-import { calculateVaporPressure } from './calculatePSaturated';
-import { calculateTemp } from './calculateTemp';
+import { calculateHeatingCoolingLimits } from '../../utils/calculateHeatingCooling';
+import { calculateVaporPressure } from '../../utils/calculatePSaturated';
 import { getWthrDataList } from './kmaData';
-import { resampleCSVData, resampleWthrData } from './resampleData';
+import { resampleCSVData, resampleWthrData } from '../../utils/resampleData';
 // CSV를 파싱하는 함수
 const parseCSV = (csv: string): DataRow[] => {
     const lines = csv.trim().split('\n');
@@ -129,14 +128,14 @@ export const processFile = async (
             }
             setProcess('기상청 데이터 불러오는 중...');
 
-            const wthrData = await getWthrDataList({
-                startDt,
-                startHh,
-                endDt,
-                endHh,
-                stnIds: stnIds.toString(),
-            });
-            // const wthrData = SAMPLE_WTHR_DATA;
+            // const wthrData = await getWthrDataList({
+            //     startDt,
+            //     startHh,
+            //     endDt,
+            //     endHh,
+            //     stnIds: stnIds.toString(),
+            // });
+            const wthrData = SAMPLE_WTHR_DATA;
             console.log('기상청 데이터 :', { wthrData });
 
             console.log('기상청 데이터 이동평균 구하는 중...');

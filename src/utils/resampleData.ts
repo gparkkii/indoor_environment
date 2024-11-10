@@ -3,7 +3,7 @@ import {
     MProcessedDataRow,
     ParsedDataRow,
     WProcessedDataRow,
-} from './@types';
+} from '../actions/temperature/@types';
 
 // 시간 데이터를 Date 객체로 변환하고, 날짜 형식 검증
 const convertToDate = (data: DataRow[]): ParsedDataRow[] => {

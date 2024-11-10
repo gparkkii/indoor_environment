@@ -168,12 +168,19 @@ export default function Drawer() {
                     const geocoder = observatory
                         ? extractNumber(observatory)
                         : null;
-                    const result = await processFile(file, setProcess, geocoder);
+                    const result = await processFile(
+                        file,
+                        setProcess,
+                        geocoder
+                    );
                     if (result !== null) {
                         setOpen(false);
-                        let url = `/${segment}?result=${encodeURI(JSON.stringify(result))}`;
+                        let url = `/${segment}?result=${encodeURIComponent(JSON.stringify(result))}`;
                         if (buildingType) {
-                            url += `&type=${buildingType}`;
+                            url += `&btype=${buildingType}`;
+                        }
+                        if (geocoder) {
+                            url += `&geocoder=${geocoder}`;
                         }
                         router.push(url);
                     }

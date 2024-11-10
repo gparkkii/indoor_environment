@@ -1,4 +1,4 @@
-import { DataRow } from './@types';
+import { DataRow } from '../actions/temperature/@types';
 
 const calculatePSaturated = (
     mTemp: number[],
