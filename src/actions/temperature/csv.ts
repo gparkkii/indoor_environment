@@ -3,6 +3,7 @@ import { calculateHeatingCoolingLimits } from '../../utils/calculateHeatingCooli
 import { calculateVaporPressure } from '../../utils/calculatePSaturated';
 import { getWthrDataList } from './kmaData';
 import { resampleCSVData, resampleWthrData } from '../../utils/resampleData';
+import { jsonToCsv } from '../../utils/jsonToCsv';
 
 // CSV를 파싱하는 함수
 const parseCSV = (csv: string): DataRow[] => {
@@ -96,7 +97,8 @@ export const processFile = async (
     setProcess: React.Dispatch<React.SetStateAction<string>>,
     stnId: number | null,
     cachedWeatherData: Record<string, any>,
-    setCachedWeatherData: (key: string, data: any) => void
+    setCachedWeatherData: (key: string, data: any) => void,
+    resetCachedWeatherData: () => void
 ) => {
     try {
         const parsedData = await handleFileUpload(file);
@@ -131,6 +133,7 @@ export const processFile = async (
                 throw new Error(`관측소 데이터를 찾을 수 없습니다.`);
             }
             setProcess('기상청 데이터 불러오는 중...');
+            console.log({ cacheKey, cachedWeatherData });
 
             const wthrData = cachedWeatherData[cacheKey]
                 ? cachedWeatherData[cacheKey]
@@ -160,6 +163,7 @@ export const processFile = async (
                     resampledWthrData
                 );
                 console.log('결합된 데이터', mergedData);
+                // jsonToCsv(mergedData, '측정데이터이동평균결합');
 
                 console.log('수증기 분압차 계산중...');
                 setProcess('수증기 분압차 계산중...');
@@ -173,6 +177,19 @@ export const processFile = async (
                     pdiff,
                 });
 
+                // jsonToCsv(
+                //     [
+                //         {
+                //             p_sat_i,
+                //             p_sat_o,
+                //             pi,
+                //             po,
+                //             pdiff,
+                //         },
+                //     ],
+                //     '수증기분압차결합'
+                // );
+
                 const wTemp = mergedData.map((row) => row.wTemp);
                 const mTemp = mergedData.map((row) => row.mTemp);
 
@@ -183,24 +200,25 @@ export const processFile = async (
                     mTemp,
                     p_diff: pdiff,
                 });
-                console.log('hHumi, cHumi, hTemp, hTemp 계산 완료', {
-                    value,
-                });
 
                 console.log('hTemp, hTemp 계산중...');
                 setProcess('hTemp, hTemp 계산중...');
 
-                console.log('계산 완료', value);
+                console.log('hHumi, cHumi, hTemp, hTemp 계산 완료', value);
+                // jsonToCsv([value], '계산 완료');
                 setProcess('계산 완료');
                 return value;
             } else {
                 setProcess('기상청 데이터 이동평균을 불러오지 못했습니다..');
+                resetCachedWeatherData();
             }
         } else {
             setProcess('측정 데이터 이동평균을 불러오지 못했습니다.');
+            resetCachedWeatherData();
         }
     } catch (error) {
         setProcess(`Error reading file: ${error}`);
+        resetCachedWeatherData();
     }
     return null;
 };

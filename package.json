@@ -11,6 +11,7 @@
   "dependencies": {
     "@types/mathjs": "^9.4.2",
     "apexcharts": "^3.53.0",
+    "decimal.js": "^10.4.3",
     "mathjs": "^13.2.1",
     "next": "14.2.9",
     "prettier": "^3.3.3",

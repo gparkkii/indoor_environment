@@ -5,6 +5,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 type WeatherDataContextType = {
     cachedWeatherData: Record<string, any>;
     setCachedWeatherData: (key: string, data: any) => void;
+    resetCachedWeatherData: () => void;
 };
 
 const WeatherDataContext = createContext<WeatherDataContextType | undefined>(
@@ -20,13 +21,21 @@ export const WeatherDataProvider: React.FC<{ children: React.ReactNode }> = ({
         setCache((prev) => ({ ...prev, [key]: data }));
     };
 
+    const resetCachedWeatherData = () => {
+        setCache({});
+    };
+
     useEffect(() => {
         console.log(cachedWeatherData);
     }, [cachedWeatherData]);
 
     return (
         <WeatherDataContext.Provider
-            value={{ cachedWeatherData, setCachedWeatherData }}
+            value={{
+                cachedWeatherData,
+                resetCachedWeatherData,
+                setCachedWeatherData,
+            }}
         >
             {children}
         </WeatherDataContext.Provider>

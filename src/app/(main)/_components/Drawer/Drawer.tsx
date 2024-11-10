@@ -45,7 +45,8 @@ export default function Drawer() {
     const router = useRouter();
     const segment = useSelectedLayoutSegment() as keyof typeof MENU;
 
-    const { cachedWeatherData, setCachedWeatherData } = useWeatherData();
+    const { cachedWeatherData, resetCachedWeatherData, setCachedWeatherData } =
+        useWeatherData();
 
     const searchParams = useSearchParams();
     const yearIndex = searchParams.get('year');
@@ -107,20 +108,19 @@ export default function Drawer() {
             }
             if (geocoderIndex) {
                 setObservatory(
-                    `${LATLNG.find((value) => value.id === Number(geocoderIndex))?.location}(${geocoderIndex})`
+                    `${LATLNG.find((value) => value.id === Number(geocoderIndex))?.location} (${geocoderIndex})`
                 );
             }
             if (btypeIndex) {
                 setBuildingType(
-                    Number(btypeIndex) as unknown as BuildingType.value
-                );
-            } else {
-                setBuildingType(
-                    (isSampleFile ? 0 : 1) as unknown as BuildingType.value
+                    isSampleFile
+                        ? (0 as unknown as BuildingType.value)
+                        : (Number(btypeIndex) as unknown as BuildingType.value)
                 );
             }
         } else {
             setObservatory(null);
+            setFile(null);
         }
     }, [segment, isSampleFile, btypeIndex]);
 
@@ -157,13 +157,14 @@ export default function Drawer() {
     const deleteFile = () => {
         setFile(null);
         setIsSampleFile(false);
+        resetCachedWeatherData();
     };
 
     // temperature -> location
     const handleAddress = async (data: any) => {
         const geocoder = await getGeocoder(data.address);
         if (geocoder) {
-            setObservatory(`${geocoder?.location}(${geocoder.id})`);
+            setObservatory(`${geocoder?.location} (${geocoder.id})`);
         } else {
             alert('관측소를 불러올 수 없습니다.');
         }
@@ -192,7 +193,8 @@ export default function Drawer() {
                         setProcess,
                         geocoder,
                         cachedWeatherData,
-                        setCachedWeatherData
+                        setCachedWeatherData,
+                        resetCachedWeatherData
                     );
                     if (result !== null) {
                         setOpen(false);

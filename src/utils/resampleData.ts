@@ -1,3 +1,4 @@
+import Decimal from 'decimal.js';
 import {
     DataRow,
     MProcessedDataRow,
@@ -25,10 +26,11 @@ const checkHourlyInterval = (data: ParsedDataRow[]) => {
     for (let i = 1; i < data.length; i++) {
         const previous = data[i - 1].tm;
         const current = data[i].tm;
-        const interval = (current.getTime() - previous.getTime()) / (1000 * 60); // 분 단위로 변환
+        const interval = new Decimal(current.getTime())
+            .minus(previous.getTime())
+            .dividedBy(1000 * 60); // 분 단위
 
-        // 60분이 아닌 경우(정확히 한 시간이 아닌 경우) false 반환
-        if (interval !== 60) {
+        if (!interval.equals(60)) {
             return false;
         }
     }
@@ -36,51 +38,51 @@ const checkHourlyInterval = (data: ParsedDataRow[]) => {
 };
 
 // 시간 단위로 리샘플링 (평균 값으로 계산)
-const resampleHourly = (data: ParsedDataRow[]) => {
+const resampleHourly = (data: ParsedDataRow[]): MProcessedDataRow[] => {
     const hourlyData: {
-        [key: string]: { tempSum: number; humiSum: number; count: number };
+        [key: string]: { tempSum: Decimal; humiSum: Decimal; count: number };
     } = {};
 
     data.forEach((entry) => {
-        // 'YYYY-MM-DD HH' 형식의 키를 생성, 이때 `tm`을 로컬 시간대로 변환
         const date = new Date(entry.tm);
         const localHour = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}`;
 
         if (!hourlyData[localHour]) {
             hourlyData[localHour] = {
-                tempSum: entry.temp,
-                humiSum: entry.humi,
+                tempSum: new Decimal(entry.temp),
+                humiSum: new Decimal(entry.humi),
                 count: 1,
             };
         } else {
-            hourlyData[localHour].tempSum += entry.temp;
-            hourlyData[localHour].humiSum += entry.humi;
+            hourlyData[localHour].tempSum = hourlyData[localHour].tempSum.plus(
+                entry.temp
+            );
+            hourlyData[localHour].humiSum = hourlyData[localHour].humiSum.plus(
+                entry.humi
+            );
             hourlyData[localHour].count += 1;
         }
     });
 
-    // `tm`을 로컬 시간대로 설정하고 type에 따라 필드 이름을 동적으로 설정
     return Object.keys(hourlyData).map((localHour) => {
         const [datePart, hourPart] = localHour.split(' ');
         const [year, month, day] = datePart.split('-').map(Number);
         const hour = parseInt(hourPart, 10);
 
         return {
-            tm: new Date(year, month - 1, day, hour), // 로컬 시간대 적용
-            mTemp:
-                Math.round(
-                    (hourlyData[localHour].tempSum /
-                        hourlyData[localHour].count) *
-                        10
-                ) / 10,
-            mHumi:
-                Math.round(
-                    (hourlyData[localHour].humiSum /
-                        hourlyData[localHour].count) *
-                        10
-                ) / 10,
+            tm: new Date(year, month - 1, day, hour),
+            mTemp: parseFloat(
+                hourlyData[localHour].tempSum
+                    .dividedBy(hourlyData[localHour].count)
+                    .toFixed(1)
+            ),
+            mHumi: parseFloat(
+                hourlyData[localHour].humiSum
+                    .dividedBy(hourlyData[localHour].count)
+                    .toFixed(1)
+            ),
         };
-    }) as unknown as MProcessedDataRow[];
+    });
 };
 
 // 24시간 이동평균 계산 함수
@@ -88,25 +90,27 @@ const calculateMovingAverageOptimized = (
     data: ParsedDataRow[],
     windowSize: number
 ): WProcessedDataRow[] => {
-    let tempSum = 0;
-    let humiSum = 0;
+    let tempSum = new Decimal(0);
+    let humiSum = new Decimal(0);
     const result: WProcessedDataRow[] = [];
 
     data.forEach((point, index) => {
-        tempSum += point.temp;
-        humiSum += point.humi;
+        tempSum = tempSum.plus(point.temp);
+        humiSum = humiSum.plus(point.humi);
 
-        // 가용한 데이터만을 기반으로 점진적 평균을 계산
         const effectiveWindowSize = Math.min(windowSize, index + 1);
-        const wTemp = Math.round((tempSum / effectiveWindowSize) * 10) / 10;
-        const wHumi = Math.round((humiSum / effectiveWindowSize) * 10) / 10;
+        const wTemp = tempSum.dividedBy(effectiveWindowSize);
+        const wHumi = humiSum.dividedBy(effectiveWindowSize);
 
-        result.push({ tm: point.tm, wTemp, wHumi });
+        result.push({
+            tm: point.tm,
+            wTemp: parseFloat(wTemp.toFixed(1)),
+            wHumi: parseFloat(wHumi.toFixed(1)),
+        });
 
-        // windowSize에 도달하면 가장 오래된 값을 빼고 이동 평균 유지
         if (index >= windowSize - 1) {
-            tempSum -= data[index - windowSize + 1].temp;
-            humiSum -= data[index - windowSize + 1].humi;
+            tempSum = tempSum.minus(data[index - windowSize + 1].temp);
+            humiSum = humiSum.minus(data[index - windowSize + 1].humi);
         }
     });
 
@@ -121,12 +125,9 @@ export const resampleWthrData = async (
 }> => {
     try {
         const convertedData = convertToDate(parsedData);
-
-        // 데이터를 tm 열 기준으로 시간순으로 정렬
         const sortedData = convertedData.sort(
             (a, b) => a.tm.getTime() - b.tm.getTime()
         );
-
         const movingAverage = calculateMovingAverageOptimized(sortedData, 24);
 
         console.log('24-hour Moving Average Data (Already Hourly)');
@@ -145,30 +146,35 @@ export const resampleCSVData = async (
     data: MProcessedDataRow[];
 }> => {
     try {
-        const convertedData = convertToDate(parsedData);
+        // Filter out rows where both temp and humi are 0
+        const filteredData = parsedData.filter(
+            (entry) => entry.temp !== 0 || entry.humi !== 0
+        );
 
-        // 데이터를 tm 열 기준으로 시간순으로 정렬
+        const convertedData = convertToDate(filteredData);
+
+        // Sort data by tm column in ascending order
         const sortedData = convertedData.sort(
             (a, b) => a.tm.getTime() - b.tm.getTime()
         );
 
-        // 데이터가 정확히 1시간 간격인지 확인
-        if (!checkHourlyInterval(sortedData)) {
-            // 1시간 간격이 아닌 경우 리샘플링 수행
-            const resampledData = resampleHourly(sortedData);
+        console.log({ filteredData, convertedData, sortedData });
 
+        // Check if data is in exactly 1-hour intervals
+        if (!checkHourlyInterval(sortedData)) {
+            // Resample if not in hourly intervals
+            const resampledData = resampleHourly(sortedData);
             console.log('24-hour Moving Average Data (Resampled)');
             return { result: 'success', data: resampledData };
         } else {
-            // 이미 1시간 간격인 경우 temp, humi 필드를 mTemp, mHumi 또는 wTemp, wHumi로 변환
-            const updatedData = sortedData.map((entry) => {
-                return {
-                    tm: entry.tm,
-                    mTemp: entry.temp,
-                    mHumi: entry.humi,
-                    userStnId: entry.stnId,
-                };
-            }) as unknown as MProcessedDataRow[];
+            // If already in 1-hour intervals, map temp and humi fields to mTemp and mHumi
+            const updatedData = sortedData.map((entry) => ({
+                tm: entry.tm,
+                mTemp: entry.temp,
+                mHumi: entry.humi,
+                userStnId: entry.stnId,
+            })) as MProcessedDataRow[];
+
             console.log('24-hour Moving Average Data (Already Hourly)');
             return { result: 'success', data: updatedData };
         }

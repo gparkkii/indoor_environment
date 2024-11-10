@@ -1,8 +1,4 @@
-import {
-    mean,
-    linearRegression,
-    linearRegressionLine,
-} from 'simple-statistics';
+import { mean } from 'simple-statistics';
 
 type InputData = {
     wTemp: number[];
@@ -25,34 +21,52 @@ type Result = {
     cPDiff?: number;
 };
 
-function getRound(value: number) {
-    return parseFloat(value.toFixed(1));
+// 선형 회귀 함수 (Python np.polyfit 유사)
+function linearRegression(
+    x: number[],
+    y: number[]
+): { slope: number; intercept: number } {
+    const n = x.length;
+    const sumX = x.reduce((a, b) => a + b, 0);
+    const sumY = y.reduce((a, b) => a + b, 0);
+    const sumXY = x.reduce((a, b, i) => a + b * y[i], 0);
+    const sumX2 = x.reduce((a, b) => a + b * b, 0);
+
+    const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+    const intercept = (sumY - slope * sumX) / n;
+    return { slope, intercept };
 }
 
-// R-squared 계산 함수
-function calculateRSquared(actual: number[], predicted: number[]): number {
-    const meanActual = mean(actual);
-    const ssTotal = actual.reduce(
-        (acc, val) => acc + Math.pow(val - meanActual, 2),
+// 상관 계수 기반 R-squared 계산 (Python np.corrcoef 유사)
+function calculateRSquaredFromCorrelation(x: number[], y: number[]): number {
+    const xMean = mean(x);
+    const yMean = mean(y);
+
+    const numerator = x.reduce(
+        (acc, xi, i) => acc + (xi - xMean) * (y[i] - yMean),
         0
     );
-    const ssResidual = actual.reduce(
-        (acc, val, i) => acc + Math.pow(val - predicted[i], 2),
-        0
+    const denominatorX = Math.sqrt(
+        x.reduce((acc, xi) => acc + Math.pow(xi - xMean, 2), 0)
     );
-    return 1 - ssResidual / ssTotal;
+    const denominatorY = Math.sqrt(
+        y.reduce((acc, yi) => acc + Math.pow(yi - yMean, 2), 0)
+    );
+
+    const correlation = numerator / (denominatorX * denominatorY);
+    return Math.pow(correlation, 2); // R-squared
 }
 
-// heating 및 cooling limits 생성 함수
+// Python과 동일한 범위 생성 함수
 const calculateLimits = (min: number, max: number, step: number): number[] => {
     const limits: number[] = [];
     for (let i = min; i <= max; i += step) {
-        limits.push(parseFloat(i.toFixed(2)));
+        limits.push(Math.round(i * 100) / 100); // 소수점 두 자리에서 반올림
     }
     return limits;
 };
 
-// 목표 R-squared와 가장 가까운 값을 찾는 함수
+// 가장 가까운 R-squared를 찾는 함수
 const findClosestRSquared = (
     range: { limit: number; r_squared: number }[],
     target: number
@@ -72,24 +86,20 @@ const findClosestRSquared = (
 };
 
 export const calculateHeatingCoolingLimits = (data: InputData): Result => {
-    // 각 배열의 길이가 동일한지 확인
     const { wTemp, mTemp, p_diff } = data;
     if (wTemp.length !== mTemp.length || wTemp.length !== p_diff.length) {
         throw new Error('Input arrays must have the same length.');
     }
 
-    // 데이터를 개별 객체 배열로 변환
     const combinedData = wTemp.map((temp, index) => ({
         wTemp: temp,
         mTemp: mTemp[index],
         p_diff: p_diff[index],
     }));
 
-    // heating_max와 cooling_max 계산
     const heating_max = Math.min(...wTemp);
     const cooling_max = Math.max(...wTemp);
 
-    // heating 및 cooling limits 생성
     const heating_limits = calculateLimits(heating_max, heating_max + 30, 0.1);
     const cooling_limits = calculateLimits(cooling_max - 30, cooling_max, 0.1);
 
@@ -103,7 +113,6 @@ export const calculateHeatingCoolingLimits = (data: InputData): Result => {
         const r_squared_rh_range_h: { limit: number; r_squared: number }[] = [];
         const r_squared_rh_range_c: { limit: number; r_squared: number }[] = [];
 
-        // heating 결정계수 계산
         heating_limits.forEach((heating_limit) => {
             const heating_range = combinedData.filter(
                 (row) => row.wTemp <= heating_limit && row.wTemp >= heating_max
@@ -111,12 +120,12 @@ export const calculateHeatingCoolingLimits = (data: InputData): Result => {
             if (heating_range.length > 1) {
                 const x = heating_range.map((row) => row.wTemp);
                 const y = heating_range.map((row) => row[r_squared_column]);
-                const { m, b } = linearRegression(
-                    x.map((xVal, i) => [xVal, y[i]])
+                const { slope, intercept } = linearRegression(x, y);
+                const predicted = x.map((xVal) => slope * xVal + intercept);
+                const r_squared_h = calculateRSquaredFromCorrelation(
+                    y,
+                    predicted
                 );
-                const regressionLine = linearRegressionLine({ m, b });
-                const predicted = x.map((xVal) => regressionLine(xVal));
-                const r_squared_h = calculateRSquared(y, predicted);
                 r_squared_rh_range_h.push({
                     limit: heating_limit,
                     r_squared: r_squared_h,
@@ -124,7 +133,6 @@ export const calculateHeatingCoolingLimits = (data: InputData): Result => {
             }
         });
 
-        // cooling 결정계수 계산
         cooling_limits.forEach((cooling_limit) => {
             const cooling_range = combinedData.filter(
                 (row) => row.wTemp >= cooling_limit && row.wTemp <= cooling_max
@@ -132,12 +140,12 @@ export const calculateHeatingCoolingLimits = (data: InputData): Result => {
             if (cooling_range.length > 1) {
                 const x = cooling_range.map((row) => row.wTemp);
                 const y = cooling_range.map((row) => row[r_squared_column]);
-                const { m, b } = linearRegression(
-                    x.map((xVal, i) => [xVal, y[i]])
+                const { slope, intercept } = linearRegression(x, y);
+                const predicted = x.map((xVal) => slope * xVal + intercept);
+                const r_squared_c = calculateRSquaredFromCorrelation(
+                    y,
+                    predicted
                 );
-                const regressionLine = linearRegressionLine({ m, b });
-                const predicted = x.map((xVal) => regressionLine(xVal));
-                const r_squared_c = calculateRSquared(y, predicted);
                 r_squared_rh_range_c.push({
                     limit: cooling_limit,
                     r_squared: r_squared_c,
@@ -145,7 +153,6 @@ export const calculateHeatingCoolingLimits = (data: InputData): Result => {
             }
         });
 
-        // heating 및 cooling의 목표 R-squared와 가장 가까운 값 찾기
         if (r_squared_column === 'mTemp') {
             const { closestLimit: hTemp, closestRSquared: hTempRSquared } =
                 findClosestRSquared(r_squared_rh_range_h, target_r_squared);
