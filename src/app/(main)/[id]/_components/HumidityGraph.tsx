@@ -6,99 +6,6 @@ import styles from './Chart.module.css';
 
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 
-const ANNOTATION = {
-    annotations: {
-        yaxis: [
-            {
-                y: 1360,
-                borderColor: 'rgba(0, 142, 251, 0.45)',
-                borderWidth: 2,
-                strokeDashArray: 3,
-                label: {
-                    borderColor: '#008FFB',
-                    offsetY: -1,
-                    style: {
-                        color: '#fff',
-                        background: '#008FFB',
-                    },
-                    text: 'Humidity Grade 1',
-                },
-            },
-            {
-                y: 1080,
-                borderColor: 'rgba(0, 227, 151, 0.45)',
-                borderWidth: 2,
-                strokeDashArray: 3,
-                label: {
-                    borderColor: '#00E396',
-                    offsetY: -1,
-                    style: {
-                        color: '#fff',
-                        background: '#00E396',
-                    },
-                    text: 'Humidity Grade 2',
-                },
-            },
-            {
-                y: 810,
-                borderColor: 'rgba(255, 175, 26, 0.45)',
-                borderWidth: 2,
-                strokeDashArray: 3,
-                label: {
-                    borderColor: '#FFB01A',
-                    offsetY: -1,
-                    style: {
-                        color: '#fff',
-                        background: '#FFB01A',
-                    },
-                    text: 'Humidity Grade 3',
-                },
-            },
-            {
-                y: 640,
-                borderColor: 'rgba(255, 69, 96, 0.45)',
-                borderWidth: 2,
-                strokeDashArray: 3,
-                label: {
-                    borderColor: '#FF4560',
-                    style: {
-                        padding: {
-                            top: 4,
-                            bottom: 4,
-                            right: 8,
-                            left: 8,
-                        },
-                        color: '#fff',
-                        background: '#FF4560',
-                    },
-                    text: 'Humidity Grade 4',
-                },
-            },
-            {
-                y: 270,
-                borderColor: 'rgba(120, 93, 208, 0.45)',
-                borderWidth: 2,
-                strokeDashArray: 3,
-                label: {
-                    borderColor: '#775DD0',
-                    offsetY: -1,
-                    style: {
-                        padding: {
-                            top: 4,
-                            bottom: 4,
-                            right: 8,
-                            left: 8,
-                        },
-                        color: '#fff',
-                        background: '#775DD0',
-                    },
-                    text: 'Humidity Grade 5',
-                },
-            },
-        ],
-    },
-};
-
 // Linear function to calculate slope and intercept
 const linearFunction = (
     x1: number,
@@ -206,6 +113,9 @@ const HumidityGraph = () => {
                 },
                 formatter: (value: string) =>
                     Number(value) % 5 === 0 ? value.toString() : '',
+            },
+            tooltip: {
+                formatter: (value) => (Number(value) - 1).toFixed(0),
             },
         },
         yaxis: {

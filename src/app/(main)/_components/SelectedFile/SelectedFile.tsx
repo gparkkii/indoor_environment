@@ -30,8 +30,9 @@ export default function SelectedFile({
                 <div className={styles['file-row']}>
                     <div
                         className={styles.file}
+                        style={{ cursor: disabled ? 'not-allowed' : 'pointer' }}
                         onClick={() => {
-                            onClick?.();
+                            !disabled && onClick?.();
                         }}
                     >
                         <Image src={icon} alt="csv" width={22} height={22} />
@@ -40,7 +41,8 @@ export default function SelectedFile({
                     <button
                         className={styles.delete}
                         type="button"
-                        onClick={handleDelete}
+                        style={{ cursor: disabled ? 'not-allowed' : 'pointer' }}
+                        onClick={() => !disabled && handleDelete()}
                     >
                         <Image
                             src={DeleteIcon}

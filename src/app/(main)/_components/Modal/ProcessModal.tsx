@@ -35,12 +35,12 @@ export default function ProcessModal({
                 {loading ? (
                     <div className={styles.process}>
                         <div className={styles.loader} />
-                        <h3>{process}</h3>
+                        <h3 dangerouslySetInnerHTML={{ __html: process }} />
                     </div>
                 ) : (
                     <div className={styles.process}>
                         <div className={styles.result}>
-                            <p>{process}</p>
+                            <p dangerouslySetInnerHTML={{ __html: process }} />
                         </div>
                     </div>
                 )}

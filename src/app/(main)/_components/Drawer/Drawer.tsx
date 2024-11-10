@@ -100,7 +100,7 @@ export default function Drawer() {
     useEffect(() => {
         if (segment === 'temperature') {
             if (isSampleFile) {
-                setObservatory(null);
+                setObservatory(`서울 (108)`);
             }
             if (geocoderIndex) {
                 setObservatory(
@@ -140,7 +140,7 @@ export default function Drawer() {
                 type: 'text/csv',
             });
             setFile(newFile);
-            setObservatory(null);
+            setObservatory(`서울 (108)`);
             setIsSampleFile(true);
         } catch (error) {
             console.error('Error fetching the sample file:', error);
