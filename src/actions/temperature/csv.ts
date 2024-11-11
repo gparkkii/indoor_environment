@@ -133,20 +133,17 @@ export const processFile = async (
                 throw new Error(`관측소 데이터를 찾을 수 없습니다.`);
             }
             setProcess('기상청 데이터 불러오는 중...');
-            console.log({ cacheKey, cachedWeatherData });
 
-            const wthrData = cachedWeatherData[cacheKey]
-                ? cachedWeatherData[cacheKey]
-                : await getWthrDataList({
-                      startDt,
-                      startHh,
-                      endDt,
-                      endHh,
-                      stnIds: stnIds.toString(),
-                      setProcess,
-                      setCachedWeatherData: (data) =>
-                          setCachedWeatherData(cacheKey, data),
-                  });
+            const wthrData = await getWthrDataList({
+                startDt,
+                startHh,
+                endDt,
+                endHh,
+                stnIds: stnIds.toString(),
+                setProcess,
+                setCachedWeatherData: (data) =>
+                    setCachedWeatherData(cacheKey, data),
+            });
             console.log('기상청 데이터 :', { wthrData });
 
             console.log('기상청 데이터 이동평균 구하는 중...');
