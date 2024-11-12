@@ -140,9 +140,6 @@ export const processFile = async (
                 endDt,
                 endHh,
                 stnIds: stnIds.toString(),
-                setProcess,
-                setCachedWeatherData: (data) =>
-                    setCachedWeatherData(cacheKey, data),
             });
             console.log('기상청 데이터 :', { wthrData });
 
