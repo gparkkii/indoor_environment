@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 
-const BASE_URL =
-    'http://apis.data.go.kr/1360000/AsosHourlyInfoService/getWthrDataList';
+const BASE_URL = '1360000/AsosHourlyInfoService/getWthrDataList';
 const API_KEY =
     'v8Nzm%2B%2BPMhW7zOOBSJc%2B5ohWzRZoYJFvprIGa4wandlVTN6PYWJrMXsFH49eXU14jUowf8fuFvbVoirYPRNxDw%3D%3D';
 
@@ -30,7 +29,7 @@ export async function GET(request: Request) {
         async start(controller) {
             try {
                 const firstResponse = await fetch(
-                    `${BASE_URL}?serviceKey=${API_KEY}&dataType=JSON&dataCd=ASOS&dateCd=HR&startDt=${startDt}&endDt=${endDt}&startHh=${startHh}&endHh=${endHh}&stnIds=${stnIds}&pageNo=1&numOfRows=${numOfRows}`,
+                    `"/api/wthr/${BASE_URL}?serviceKey=${API_KEY}&dataType=JSON&dataCd=ASOS&dateCd=HR&startDt=${startDt}&endDt=${endDt}&startHh=${startHh}&endHh=${endHh}&stnIds=${stnIds}&pageNo=1&numOfRows=${numOfRows}`,
                     { method: 'GET' }
                 );
                 const firstResult = await firstResponse.json();
