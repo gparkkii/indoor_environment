@@ -167,12 +167,6 @@ const HumidityGraph = () => {
 
     return (
         <div className={styles.humidity}>
-            <ApexCharts
-                series={series}
-                options={options}
-                type="line"
-                height={560}
-            />
             <div className={styles['humidity-class']}>
                 <h5>Internal humidity classes</h5>
                 <table>
@@ -184,8 +178,19 @@ const HumidityGraph = () => {
                     </thead>
                     <tbody>
                         <tr>
-                            <td>1</td>
-                            <td>Unoccupied buildings, storage of dry goods</td>
+                            <td>5</td>
+                            <td>
+                                Special buildings, for example, laundry, brewery
+                                and swimming pool
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>Sports halls, kitchens and canteens</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Buildings with unknown occupancy</td>
                         </tr>
                         <tr>
                             <td>2</td>
@@ -195,23 +200,18 @@ const HumidityGraph = () => {
                             </td>
                         </tr>
                         <tr>
-                            <td>3</td>
-                            <td>Buildings with unknown occupancy</td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>Sports halls, kitchens and canteens</td>
-                        </tr>
-                        <tr>
-                            <td>5</td>
-                            <td>
-                                Special buildings, for example, laundry, brewery
-                                and swimming pool
-                            </td>
+                            <td>1</td>
+                            <td>Unoccupied buildings, storage of dry goods</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
+            <ApexCharts
+                series={series}
+                options={options}
+                type="line"
+                height={560}
+            />
         </div>
     );
 };

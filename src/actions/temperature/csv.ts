@@ -160,7 +160,6 @@ export const processFile = async (
             // jsonToCsv(wthrData, '기상청데이터');
 
             console.log('기상청 데이터 이동평균 구하는 중...');
-            setProcess('기상청 데이터 이동평균 구하는 중...');
             const { result: wResult, data: resampledWthrData } =
                 await resampleWthrData(wthrData);
             console.log('기상청 데이터 이동평균 :', wResult, resampledWthrData);

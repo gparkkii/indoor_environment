@@ -62,6 +62,7 @@ export const getWthrDataList = async ({
                     pageNo += 1;
                 }
             }
+            setProcess('기상청 데이터 이동평균 구하는 중...');
             return allData;
         } else {
             return allData;

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import styles from './Chart.module.css';
 import dynamic from 'next/dynamic';
 
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
@@ -119,12 +120,14 @@ const TempGraph = ({ coordinate_1, coordinate_2 }: TempGraphProps) => {
     };
 
     return (
-        <ApexCharts
-            options={options}
-            series={series}
-            type="line"
-            height={500}
-        />
+        <div className={styles.temp}>
+            <ApexCharts
+                options={options}
+                series={series}
+                type="line"
+                height={500}
+            />
+        </div>
     );
 };
 
