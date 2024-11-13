@@ -73,7 +73,7 @@ const HumidityGraph = () => {
 
             // 구간별 데이터 시리즈 추가
             seriesData.push({
-                name: `Class ${i + 1}`,
+                name: `Class ${5 - i}`,
                 data: p_diff_ISO,
             });
         });
