@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 const BASE_URL =
     'http://apis.data.go.kr/1360000/AsosHourlyInfoService/getWthrDataList';
 const API_KEY =
-    'cVznl1acnz0iiAelAAbvzq1VZ0pw1wCGChRLP6Fc4GtpfIzTz5h9yBKR5uY3yvwMs1bOdo7Tr3swlOrd4yrAxQ%3D%3D';
+    'v8Nzm%2B%2BPMhW7zOOBSJc%2B5ohWzRZoYJFvprIGa4wandlVTN6PYWJrMXsFH49eXU14jUowf8fuFvbVoirYPRNxDw%3D%3D';
 
 interface DataRow {
     stnId: number;

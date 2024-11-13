@@ -37,10 +37,15 @@ export const getWthrDataList = async ({
         if (result.pages > 1) {
             pageNo += 1;
             for (let page = 2; page <= result.pages; page += 1) {
+                const currentPage = pageNo * 999;
+                setProcess(
+                    `<span><strong>${currentPage > result.total ? result.total : currentPage}</strong> of ${result.total}</span><br/>기상청 데이터 불러오는 중...`
+                );
                 const response = await fetch(
                     `${BASE_URL}?startDt=${startDt}&endDt=${endDt}&startHh=${startHh}&endHh=${endHh}&stnIds=${stnIds}&pageNo=${pageNo}`,
                     { method: 'GET' }
                 );
+
                 if (!response.ok) {
                     throw new Error(
                         `Error fetching data page ${page}: ${response.statusText}`
@@ -49,9 +54,6 @@ export const getWthrDataList = async ({
                     const result = await response.json();
                     allData.push(...result.data);
 
-                    setProcess(
-                        `<span><strong>${pageNo * 999}</strong> of ${result.total}</span><br/>기상청 데이터 불러오는 중...`
-                    );
                     console.log(
                         `필요한 날짜 ${startDt} ~ ${endDt}, 총 필요한 데이터 개수 ${result.total}, 필요한 api 호출 수 ${result.pages}, api 호출 횟수 ${pageNo}`
                     );

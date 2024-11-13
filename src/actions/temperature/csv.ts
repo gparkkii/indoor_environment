@@ -101,10 +101,10 @@ export const processFile = async (
     resetCachedWeatherData: () => void
 ) => {
     try {
+        setProcess('측정 데이터 이동평균 구하는 중...');
         const parsedData = await handleFileUpload(file);
 
         console.log('측정 데이터 이동평균 구하는 중...');
-        setProcess('측정 데이터 이동평균 구하는 중...');
         const { result: mResult, data: resampledData } =
             await resampleCSVData(parsedData);
         console.log('측정 데이터 이동평균 :', { resampledData });
@@ -134,18 +134,28 @@ export const processFile = async (
             }
             setProcess('기상청 데이터 불러오는 중...');
 
-            const wthrData = cachedWeatherData[cacheKey]
-                ? cachedWeatherData[cacheKey]
-                : await getWthrDataList({
-                      startDt,
-                      startHh,
-                      endDt,
-                      endHh,
-                      stnIds: stnIds.toString(),
-                      setProcess,
-                  });
+            // const wthrData = cachedWeatherData[cacheKey]
+            //     ? cachedWeatherData[cacheKey]
+            //     : await getWthrDataList({
+            //           startDt,
+            //           startHh,
+            //           endDt,
+            //           endHh,
+            //           stnIds: stnIds.toString(),
+            //           setProcess,
+            //       });
 
-            setCachedWeatherData(cacheKey, wthrData);
+            // setCachedWeatherData(cacheKey, wthrData);
+
+            const wthrData = await getWthrDataList({
+                startDt,
+                startHh,
+                endDt,
+                endHh,
+                stnIds: stnIds.toString(),
+                setProcess,
+            });
+
             console.log('기상청 데이터 :', { wthrData });
             // jsonToCsv(wthrData, '기상청데이터');
 
