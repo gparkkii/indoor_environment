@@ -121,6 +121,7 @@ export default function Drawer() {
         } else {
             setObservatory(null);
             setFile(null);
+            setIsSampleFile(false);
         }
     }, [segment, isSampleFile, btypeIndex]);
 
