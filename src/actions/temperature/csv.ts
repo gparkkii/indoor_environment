@@ -23,6 +23,10 @@ const parseCSV = (csv: string): DataRow[] => {
         (header) => header.toLocaleLowerCase() === 'humi'
     );
 
+    if (tm === -1 || temp === -1 || humi === -1) {
+        return [];
+    }
+
     return lines.slice(1).map((line) => {
         const values = line.split(',').map((value) => value.trim());
         const row: DataRow = {
@@ -104,6 +108,13 @@ export const processFile = async (
         setProcess('측정 데이터 이동평균 구하는 중...');
         const parsedData = await handleFileUpload(file);
 
+        if (parsedData.length < 1) {
+            setProcess(
+                '파일을 변환할 수 없습니다.<br/> 누락된 행이 있는지 다시 확인해주세요.'
+            );
+            return null;
+        }
+
         console.log('측정 데이터 이동평균 구하는 중...');
         const { result: mResult, data: resampledData } =
             await resampleCSVData(parsedData);
@@ -118,7 +129,7 @@ export const processFile = async (
                 `${firstDate.getFullYear()}` +
                 `${padStringFormat(firstDate.getMonth() + 1)}` +
                 `${padStringFormat(firstDate.getDate() - 1)}`;
-            const startHh = `${padStringFormat(firstDate.getHours() + 1)}`;
+            const startHh = `${padStringFormat(firstDate.getHours())}`;
 
             const endDt =
                 `${lastDate.getFullYear()}` +
@@ -227,7 +238,7 @@ export const processFile = async (
             resetCachedWeatherData();
         }
     } catch (error) {
-        setProcess(`Error reading file: ${error}`);
+        setProcess(`${error}`);
         resetCachedWeatherData();
     }
     return null;

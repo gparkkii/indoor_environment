@@ -46,9 +46,11 @@ export const getWthrDataList = async ({
                     { method: 'GET' }
                 );
 
+                console.log('api response', { response });
+
                 if (!response.ok) {
                     throw new Error(
-                        `Error fetching data page ${page}: ${response.statusText}`
+                        `fetching data failed. page ${page}: ${response.statusText}`
                     );
                 } else {
                     const result = await response.json();
@@ -69,6 +71,6 @@ export const getWthrDataList = async ({
         }
     } catch (error) {
         console.error('Error fetching weather data:', error);
-        throw new Error('Error fetching weather data');
+        throw new Error(`${error}`);
     }
 };
