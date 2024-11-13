@@ -30,11 +30,13 @@ const parseCSV = (csv: string): DataRow[] => {
     return lines.slice(1).map((line) => {
         const values = line.split(',').map((value) => value.trim());
         const row: DataRow = {
-            stnId: Number(values?.[stnId]),
             tm: values?.[tm],
             temp: Number(values?.[temp]),
             humi: Number(values?.[humi]),
         };
+        if (values?.[stnId]) {
+            row['stnId'] = Number(values?.[stnId]);
+        }
         return row;
     });
 };
@@ -107,6 +109,7 @@ export const processFile = async (
     try {
         setProcess('측정 데이터 이동평균 구하는 중...');
         const parsedData = await handleFileUpload(file);
+        console.log(parsedData);
 
         if (parsedData.length < 1) {
             setProcess(
