@@ -125,11 +125,14 @@ export const processFile = async (
             const firstDate = resampledData[0].tm; // 최초 일자
             const lastDate = resampledData[resampledData.length - 1].tm; // 마지막 일자
 
+            const yesterdayDate = new Date(firstDate);
+            yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+
             const startDt =
-                `${firstDate.getFullYear()}` +
-                `${padStringFormat(firstDate.getMonth() + 1)}` +
-                `${padStringFormat(firstDate.getDate() - 1)}`;
-            const startHh = `${padStringFormat(firstDate.getHours())}`;
+                `${yesterdayDate.getFullYear()}` +
+                `${padStringFormat(yesterdayDate.getMonth() + 1)}` +
+                `${padStringFormat(yesterdayDate.getDate())}`;
+            const startHh = `${padStringFormat(yesterdayDate.getHours())}`;
 
             const endDt =
                 `${lastDate.getFullYear()}` +
