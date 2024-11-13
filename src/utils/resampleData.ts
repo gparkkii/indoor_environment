@@ -158,8 +158,6 @@ export const resampleCSVData = async (
             (a, b) => a.tm.getTime() - b.tm.getTime()
         );
 
-        console.log({ filteredData, convertedData, sortedData });
-
         // Check if data is in exactly 1-hour intervals
         if (!checkHourlyInterval(sortedData)) {
             // Resample if not in hourly intervals

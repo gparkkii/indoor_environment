@@ -24,6 +24,17 @@
     font-weight: 600;
     color: var(--bluegray-900);
 }
+
+.process h3 > span {
+    font-weight: 600;
+    color: var(--bluegray-500);
+}
+
+.process h3 > span > strong {
+    font-weight: 600;
+    color: var(--color-primary);
+}
+
 .process p {
     font-size: 16px;
     font-weight: 500;

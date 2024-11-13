@@ -118,7 +118,7 @@ export const processFile = async (
                 `${firstDate.getFullYear()}` +
                 `${padStringFormat(firstDate.getMonth() + 1)}` +
                 `${padStringFormat(firstDate.getDate() - 1)}`;
-            const startHh = `${padStringFormat(firstDate.getHours())}`;
+            const startHh = `${padStringFormat(firstDate.getHours() + 1)}`;
 
             const endDt =
                 `${lastDate.getFullYear()}` +
@@ -134,20 +134,27 @@ export const processFile = async (
             }
             setProcess('기상청 데이터 불러오는 중...');
 
-            const wthrData = await getWthrDataList({
-                startDt,
-                startHh,
-                endDt,
-                endHh,
-                stnIds: stnIds.toString(),
-            });
+            const wthrData = cachedWeatherData[cacheKey]
+                ? cachedWeatherData[cacheKey]
+                : await getWthrDataList({
+                      startDt,
+                      startHh,
+                      endDt,
+                      endHh,
+                      stnIds: stnIds.toString(),
+                      setProcess,
+                  });
+
+            setCachedWeatherData(cacheKey, wthrData);
             console.log('기상청 데이터 :', { wthrData });
+            // jsonToCsv(wthrData, '기상청데이터');
 
             console.log('기상청 데이터 이동평균 구하는 중...');
             setProcess('기상청 데이터 이동평균 구하는 중...');
             const { result: wResult, data: resampledWthrData } =
                 await resampleWthrData(wthrData);
             console.log('기상청 데이터 이동평균 :', wResult, resampledWthrData);
+            // jsonToCsv(resampledWthrData, '기상청데이터이동평균');
 
             console.log('측정 데이터 + 기상청 데이터 결합중..');
             setProcess('측정 데이터 + 기상청 데이터 결합중..');
