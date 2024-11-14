@@ -33,29 +33,6 @@ export default function DetailPage({
         hTempIn,
     }: processResult = result ? JSON.parse(decodeURIComponent(result)) : {};
 
-    const getCoordinate = useCallback(() => {
-        if (btype) {
-            const type = Number(btype);
-
-            if (type === 1) {
-                return { coordinate_1: [12.2, 24], coordinate_2: [20.7, 28] };
-            }
-            if (type === 2) {
-                return { coordinate_1: [7.8, 20], coordinate_2: [16.8, 26] };
-            }
-            if (type === 3) {
-                return { coordinate_1: [9.1, 21], coordinate_2: [19.7, 27] };
-            }
-        }
-        if (result) {
-            return {
-                coordinate_1: [hTemp, hTempIn],
-                coordinate_2: [cTemp, cTempIn],
-            };
-        }
-        return { coordinate_1: [0, 0], coordinate_2: [0, 0] };
-    }, [btype, cTemp, cTempIn, hTemp, hTempIn]);
-
     return (
         <div className={styles.container}>
             <Suspense fallback={null}>
@@ -112,15 +89,13 @@ export default function DetailPage({
                             <div className={styles['graph-container']}>
                                 <div className={styles.tempGraphBox}>
                                     <TempGraph
-                                        coordinate_1={
-                                            getCoordinate().coordinate_1
-                                        }
-                                        coordinate_2={
-                                            getCoordinate().coordinate_2
-                                        }
+                                        coordinate_1={[hTemp, hTempIn]}
+                                        coordinate_2={[cTemp, cTempIn]}
                                     />
                                     <div style={{ height: 100 }} />
-                                    <HumidityGraph />
+                                    <HumidityGraph
+                                        selectedClass={getHumidityClass(hPDiff)}
+                                    />
                                 </div>
                             </div>
                         )}

@@ -1,10 +1,25 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styles from './Chart.module.css';
 import dynamic from 'next/dynamic';
 
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
+
+const BASE_COORDINATE = {
+    living: {
+        coordinate_1: [12.2, 24],
+        coordinate_2: [20.7, 28],
+    },
+    commercial: {
+        coordinate_1: [7.8, 20],
+        coordinate_2: [16.8, 26],
+    },
+    social: {
+        coordinate_1: [9.1, 21],
+        coordinate_2: [19.7, 27],
+    },
+};
 
 // Linear function to calculate slope and intercept
 const linearFunction = (
@@ -28,33 +43,58 @@ const TempGraph = ({ coordinate_1, coordinate_2 }: TempGraphProps) => {
     const [series, setSeries] = useState<any[]>([]);
 
     useEffect(() => {
-        // x 축 범위를 0에서 30까지 설정
-        const xValues = Array.from({ length: 31 }, (_, i) => i); // 0 ~ 30까지 x 값
+        // x 축 범위 설정
+        const xValues = Array.from({ length: 31 }, (_, i) => i);
 
-        // 결과를 저장할 배열
-        const t_i_ISO: number[] = [];
-
-        // 각 x 값에 대해 y 값 계산 및 추가
-        xValues.forEach((i) => {
-            if (i <= coordinate_1[0]) {
-                t_i_ISO.push(coordinate_1[1]);
-            } else if (i >= coordinate_2[0]) {
-                t_i_ISO.push(coordinate_2[1]);
-            } else {
-                // 범위 내의 경우 linearFunction 호출
-                t_i_ISO.push(
-                    linearFunction(
-                        coordinate_1[0],
-                        coordinate_1[1],
-                        coordinate_2[0],
-                        coordinate_2[1],
-                        i
-                    )
+        // y 값을 계산하는 linearFunction을 래핑하여 시리즈 데이터를 생성
+        const getSeriesData = (
+            coordinate_1: number[],
+            coordinate_2: number[]
+        ) => {
+            return xValues.map((x) => {
+                if (x <= coordinate_1[0]) return coordinate_1[1];
+                if (x >= coordinate_2[0]) return coordinate_2[1];
+                return linearFunction(
+                    coordinate_1[0],
+                    coordinate_1[1],
+                    coordinate_2[0],
+                    coordinate_2[1],
+                    x
                 );
-            }
-        });
+            });
+        };
 
-        setSeries([{ name: 'ISO standard', data: t_i_ISO }]);
+        // 모든 표준 시리즈 데이터 생성
+        const seriesData = [
+            {
+                name: 'ISO standard',
+                data: getSeriesData(coordinate_1, coordinate_2),
+            },
+            {
+                name: '주거용',
+                data: getSeriesData(
+                    BASE_COORDINATE.living.coordinate_1,
+                    BASE_COORDINATE.living.coordinate_2
+                ),
+            },
+            {
+                name: '상업용',
+                data: getSeriesData(
+                    BASE_COORDINATE.commercial.coordinate_1,
+                    BASE_COORDINATE.commercial.coordinate_2
+                ),
+            },
+            {
+                name: '사회용',
+                data: getSeriesData(
+                    BASE_COORDINATE.social.coordinate_1,
+                    BASE_COORDINATE.social.coordinate_2
+                ),
+            },
+        ];
+
+        // 시리즈 상태 업데이트
+        setSeries(seriesData);
     }, [coordinate_1, coordinate_2]);
 
     const options: ApexCharts.ApexOptions = {
@@ -68,10 +108,10 @@ const TempGraph = ({ coordinate_1, coordinate_2 }: TempGraphProps) => {
             },
             fontFamily: 'Pretendard',
         },
-        colors: ['#ff6f85'],
+        colors: ['#333333', '#4a90e2', '#50c878', '#ffd700'],
         stroke: {
             curve: 'straight',
-            width: 6,
+            width: 4,
         },
         yaxis: {
             labels: {

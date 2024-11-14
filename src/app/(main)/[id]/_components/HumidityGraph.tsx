@@ -19,7 +19,11 @@ const linearFunction = (
     return slope * x + intercept;
 };
 
-const HumidityGraph = () => {
+interface HunidityGraphProps {
+    selectedClass?: number;
+}
+
+const HumidityGraph = ({ selectedClass = 1 }: HunidityGraphProps) => {
     const [series, setSeries] = useState<any[]>([]);
 
     useEffect(() => {
@@ -75,11 +79,30 @@ const HumidityGraph = () => {
             seriesData.push({
                 name: `Class ${5 - i}`,
                 data: p_diff_ISO,
+                type: 'line',
             });
         });
 
+        const rangeAreaData: any[] = [];
+
+        // x_values.forEach((value, index) => {
+        //     rangeAreaData.push({
+        //         x: value,
+        //         y: [
+        //             seriesData[5 - (selectedClass = 1)].data[index] ?? 1,
+        //             seriesData[5 - selectedClass].data[index] ?? 1,
+        //         ],
+        //     });
+        // });
+
+        // seriesData.push({
+        //     name: '1',
+        //     data: rangeAreaData,
+        //     type: 'rangeArea',
+        // });
+
         setSeries(seriesData);
-    }, []);
+    }, [selectedClass]);
 
     const options: ApexCharts.ApexOptions = {
         chart: {
@@ -92,9 +115,15 @@ const HumidityGraph = () => {
             },
             fontFamily: 'Pretendard',
         },
+        dataLabels: {
+            enabled: false,
+        },
+        tooltip: {
+            enabledOnSeries: [0, 1, 2, 3, 4],
+        },
         stroke: {
             curve: 'straight',
-            width: 6,
+            width: 4,
         },
         xaxis: {
             title: {
@@ -139,6 +168,13 @@ const HumidityGraph = () => {
             tickAmount: 8,
         },
         legend: {
+            customLegendItems: [
+                'Class 5',
+                'Class 4',
+                'Class 3',
+                'Class 2',
+                'Class 1',
+            ],
             markers: {
                 size: 6,
                 offsetX: -4,
