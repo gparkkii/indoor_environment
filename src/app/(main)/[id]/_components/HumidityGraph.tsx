@@ -15,11 +15,19 @@ const HUMIDITY_CLASS: Record<number, number> = {
 };
 
 const HUMIDITY_CLASS_COLOR: Record<number, string> = {
-    5: '#40A0FC',
-    4: '#50E7A6',
-    3: '#FEBC4B',
-    2: '#FF6478',
-    1: '#8C75D7',
+    1: '#A78BFA',
+    2: '#FB7185',
+    3: '#FACC15',
+    4: '#34D399',
+    5: '#3B82F6',
+};
+
+const HUMIDITY_CLASS_COLOR_EMPHASIS: Record<number, string> = {
+    1: '#7C3AED',
+    2: '#F43F5E',
+    3: '#EAB308',
+    4: '#10B981',
+    5: '#2563EB',
 };
 
 // Linear function to calculate slope and intercept
@@ -99,46 +107,6 @@ const HumidityGraph = ({ selectedClass = 1 }: HunidityGraphProps) => {
             });
         });
 
-        // const selectedData = [...seriesData];
-
-        // seriesData.forEach((v, i) => {
-        //     if (selectedClass === 5 - i) {
-        //         selectedData.push({
-        //             name: v.name,
-        //             data: v.data,
-        //             type: 'area',
-        //             fill: {
-        //                 type: 'gradient',
-        //                 gradient: {
-        //                     shade: 'light',
-        //                     type: 'vertical',
-        //                     opacityFrom: 0.6,
-        //                     opacityTo: 0.1,
-        //                     stops: [0, 100],
-        //                 },
-        //             },
-        //         });
-        //         if (seriesData[i + 1]) {
-        //             selectedData.push({
-        //                 name: seriesData[i + 1].name,
-        //                 data: seriesData[i + 1].data,
-        //                 type: 'area',
-        //                 fill: {
-        //                     type: 'gradient',
-        //                     gradient: {
-        //                         shade: 'light',
-        //                         type: 'vertical',
-        //                         opacityFrom: 0.6,
-        //                         opacityTo: 0.1,
-        //                         stops: [0, 100],
-        //                     },
-        //                 },
-        //                 colors: ['#FFF'],
-        //             });
-        //         }
-        //     }
-        // });
-
         setSeries(seriesData);
     }, [selectedClass]);
 
@@ -161,7 +129,14 @@ const HumidityGraph = ({ selectedClass = 1 }: HunidityGraphProps) => {
         },
         stroke: {
             curve: 'straight',
-            width: 4,
+            colors: Object.values(HUMIDITY_CLASS_COLOR).map((v, i) =>
+                5 - i === selectedClass
+                    ? HUMIDITY_CLASS_COLOR_EMPHASIS[5 - i]
+                    : HUMIDITY_CLASS_COLOR[5 - i]
+            ),
+            width: Object.keys(HUMIDITY_CLASS_COLOR).map((key, i) =>
+                5 - i === selectedClass ? 6 : 3
+            ),
         },
         xaxis: {
             title: {
@@ -247,12 +222,13 @@ const HumidityGraph = ({ selectedClass = 1 }: HunidityGraphProps) => {
                         fillColor: '#fff',
                     },
                     label: {
-                        borderColor: HUMIDITY_CLASS_COLOR[selectedClass],
+                        borderColor: '#202020',
                         offsetY: 30,
                         offsetX: 25,
                         style: {
                             color: '#fff',
-                            background: HUMIDITY_CLASS_COLOR[selectedClass],
+                            background:
+                                HUMIDITY_CLASS_COLOR_EMPHASIS[selectedClass],
                         },
                         text: `Class ${selectedClass}`,
                     },
