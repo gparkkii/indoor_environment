@@ -114,6 +114,15 @@ const TempGraph = ({ coordinate_1, coordinate_2 }: TempGraphProps) => {
             width: 4,
         },
         yaxis: {
+            title: {
+                text: ' 실내온도[℃]',
+                style: {
+                    fontFamily: 'Pretendard',
+                    fontSize: '13px',
+                    fontWeight: 500,
+                    color: '#1e293b',
+                },
+            },
             labels: {
                 style: {
                     colors: '#94a3b8',
@@ -124,7 +133,7 @@ const TempGraph = ({ coordinate_1, coordinate_2 }: TempGraphProps) => {
         },
         xaxis: {
             title: {
-                text: 't_o',
+                text: '실외온도 [℃]',
                 style: {
                     fontFamily: 'Pretendard',
                     fontSize: '13px',
@@ -148,7 +157,7 @@ const TempGraph = ({ coordinate_1, coordinate_2 }: TempGraphProps) => {
             strokeDashArray: 5,
         },
         title: {
-            text: 'Indoor Living Temperature Chart',
+            text: '실내냉난방설정온도',
             style: {
                 fontFamily: 'Pretendard',
                 fontSize: '15px',

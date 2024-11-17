@@ -6,6 +6,22 @@ import styles from './Chart.module.css';
 
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 
+const HUMIDITY_CLASS: Record<number, number> = {
+    5: 1360,
+    4: 1080,
+    3: 810,
+    2: 640,
+    1: 270,
+};
+
+const HUMIDITY_CLASS_COLOR: Record<number, string> = {
+    5: '#40A0FC',
+    4: '#50E7A6',
+    3: '#FEBC4B',
+    2: '#FF6478',
+    1: '#8C75D7',
+};
+
 // Linear function to calculate slope and intercept
 const linearFunction = (
     x1: number,
@@ -83,22 +99,44 @@ const HumidityGraph = ({ selectedClass = 1 }: HunidityGraphProps) => {
             });
         });
 
-        const rangeAreaData: any[] = [];
+        // const selectedData = [...seriesData];
 
-        // x_values.forEach((value, index) => {
-        //     rangeAreaData.push({
-        //         x: value,
-        //         y: [
-        //             seriesData[5 - (selectedClass = 1)].data[index] ?? 1,
-        //             seriesData[5 - selectedClass].data[index] ?? 1,
-        //         ],
-        //     });
-        // });
-
-        // seriesData.push({
-        //     name: '1',
-        //     data: rangeAreaData,
-        //     type: 'rangeArea',
+        // seriesData.forEach((v, i) => {
+        //     if (selectedClass === 5 - i) {
+        //         selectedData.push({
+        //             name: v.name,
+        //             data: v.data,
+        //             type: 'area',
+        //             fill: {
+        //                 type: 'gradient',
+        //                 gradient: {
+        //                     shade: 'light',
+        //                     type: 'vertical',
+        //                     opacityFrom: 0.6,
+        //                     opacityTo: 0.1,
+        //                     stops: [0, 100],
+        //                 },
+        //             },
+        //         });
+        //         if (seriesData[i + 1]) {
+        //             selectedData.push({
+        //                 name: seriesData[i + 1].name,
+        //                 data: seriesData[i + 1].data,
+        //                 type: 'area',
+        //                 fill: {
+        //                     type: 'gradient',
+        //                     gradient: {
+        //                         shade: 'light',
+        //                         type: 'vertical',
+        //                         opacityFrom: 0.6,
+        //                         opacityTo: 0.1,
+        //                         stops: [0, 100],
+        //                     },
+        //                 },
+        //                 colors: ['#FFF'],
+        //             });
+        //         }
+        //     }
         // });
 
         setSeries(seriesData);
@@ -127,7 +165,7 @@ const HumidityGraph = ({ selectedClass = 1 }: HunidityGraphProps) => {
         },
         xaxis: {
             title: {
-                text: 't_o',
+                text: '실외온도 [℃]',
                 style: {
                     fontFamily: 'Pretendard',
                     fontSize: '13px',
@@ -149,7 +187,7 @@ const HumidityGraph = ({ selectedClass = 1 }: HunidityGraphProps) => {
         },
         yaxis: {
             title: {
-                text: 'p_diff',
+                text: '수증기분압차 ΔP [Pa]',
                 style: {
                     fontFamily: 'Pretendard',
                     fontSize: '13px',
@@ -190,7 +228,7 @@ const HumidityGraph = ({ selectedClass = 1 }: HunidityGraphProps) => {
             strokeDashArray: 5,
         },
         title: {
-            text: 'ISO 13788_Humidity Class',
+            text: '습도등급',
             style: {
                 fontFamily: 'Pretendard',
                 fontSize: '15px',
@@ -198,6 +236,28 @@ const HumidityGraph = ({ selectedClass = 1 }: HunidityGraphProps) => {
                 color: '#1e293b',
             },
             align: 'center',
+        },
+        annotations: {
+            points: [
+                {
+                    x: 2,
+                    y: HUMIDITY_CLASS[selectedClass],
+                    marker: {
+                        size: 0,
+                        fillColor: '#fff',
+                    },
+                    label: {
+                        borderColor: HUMIDITY_CLASS_COLOR[selectedClass],
+                        offsetY: 30,
+                        offsetX: 25,
+                        style: {
+                            color: '#fff',
+                            background: HUMIDITY_CLASS_COLOR[selectedClass],
+                        },
+                        text: `Class ${selectedClass}`,
+                    },
+                },
+            ],
         },
     };
 
