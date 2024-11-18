@@ -180,24 +180,6 @@ const HumidityGraph = ({ selectedClass = 1 }: HunidityGraphProps) => {
             max: 1600,
             tickAmount: 8,
         },
-        legend: {
-            customLegendItems: [
-                'Class 5',
-                'Class 4',
-                'Class 3',
-                'Class 2',
-                'Class 1',
-            ],
-            markers: {
-                size: 6,
-                offsetX: -4,
-            },
-            height: 48,
-            fontWeight: 500,
-            horizontalAlign: 'center',
-            itemMargin: { horizontal: 12 },
-            position: 'bottom',
-        },
         grid: {
             borderColor: '#dfe1e5',
             strokeDashArray: 5,
