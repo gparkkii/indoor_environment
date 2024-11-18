@@ -7,6 +7,10 @@ import dynamic from 'next/dynamic';
 const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 const BASE_COORDINATE = {
+    isostandard: {
+        coordinate_1: [10, 20],
+        coordinate_2: [20, 25],
+    },
     living: {
         coordinate_1: [12.2, 24],
         coordinate_2: [20.7, 28],
@@ -68,7 +72,10 @@ const TempGraph = ({ coordinate_1, coordinate_2 }: TempGraphProps) => {
         const seriesData = [
             {
                 name: 'ISO standard',
-                data: getSeriesData(coordinate_1, coordinate_2),
+                data: getSeriesData(
+                    BASE_COORDINATE.isostandard.coordinate_1,
+                    BASE_COORDINATE.isostandard.coordinate_2
+                ),
             },
             {
                 name: '주거용',
@@ -85,13 +92,20 @@ const TempGraph = ({ coordinate_1, coordinate_2 }: TempGraphProps) => {
                 ),
             },
             {
-                name: '사회용',
+                name: '교육사회용',
                 data: getSeriesData(
                     BASE_COORDINATE.social.coordinate_1,
                     BASE_COORDINATE.social.coordinate_2
                 ),
             },
         ];
+
+        if (coordinate_1 && coordinate_2) {
+            seriesData.push({
+                name: '실측값',
+                data: getSeriesData(coordinate_1, coordinate_2),
+            });
+        }
 
         // 시리즈 상태 업데이트
         setSeries(seriesData);
@@ -108,7 +122,7 @@ const TempGraph = ({ coordinate_1, coordinate_2 }: TempGraphProps) => {
             },
             fontFamily: 'Pretendard',
         },
-        colors: ['#333333', '#4a90e2', '#50c878', '#ffd700'],
+        colors: ['#333333', '#4a90e2', '#50c878', '#ffd700', '#ff6f85'],
         stroke: {
             curve: 'straight',
             width: 4,

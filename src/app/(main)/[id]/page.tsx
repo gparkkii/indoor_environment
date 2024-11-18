@@ -47,13 +47,13 @@ export default function DetailPage({
                                 <span>
                                     <span>난방&nbsp;&nbsp;</span>
                                     <span className={styles.emphasize}>
-                                        <strong>{hTemp}</strong>
+                                        <strong>{hTempIn.toFixed(1)}</strong>
                                         <span>&nbsp;ºC</span>
                                     </span>
                                     <span>&nbsp;,&nbsp;</span>
                                     <span>냉방&nbsp;&nbsp;</span>
                                     <span className={styles.emphasize}>
-                                        <strong>{cTemp}</strong>
+                                        <strong>{cTempIn.toFixed(1)}</strong>
                                         <span>&nbsp;ºC</span>
                                     </span>
                                     <br />

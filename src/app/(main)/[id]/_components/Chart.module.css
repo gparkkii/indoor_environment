@@ -127,6 +127,7 @@
     line-height: 120%;
 
     background-color: var(--bluegray-100);
+    z-index: 999;
 }
 
 .humidity-class > h5 {
